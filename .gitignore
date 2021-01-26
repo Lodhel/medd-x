@@ -1,0 +1,6 @@
+*.idea
+*env
+*venv
+*virtualenv
+*__pycache__
+*local_settings.py
