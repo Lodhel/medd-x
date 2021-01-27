@@ -9,15 +9,13 @@ class PatientSerializer(serializers.ModelSerializer):
 
         fields = (
             'id', 'first_name', 'last_name', 'cover_name',
-            'secure', 'email', 'password', 'phone', 'language', 'country', 'city'
+            'secure', 'phone', 'language', 'country', 'city'
         )
 
         extra_kwargs = {
-            'password': {'write_only': True},
             'first_name': {'write_only': True},
             'last_name': {'write_only': True},
             'cover_name': {'write_only': True},
-            'email': {'write_only': True},
             'phone': {'write_only': True},
             'sms_code': {'write_only': True}
         }
@@ -31,7 +29,17 @@ class PatientSerializer(serializers.ModelSerializer):
 
     @transaction.atomic()
     def create(self, validated_data):
-        profile = self.create_profile(validated_data)
+        try:
+            email = validated_data["email"]
+            del validated_data["email"]
+        except KeyError:
+            email = None
+        profile = self.create_profile(
+            {
+                "is_active": False,
+                "email": email
+            }
+        )
 
         validated_data["profile"] = profile
         instance = models.Patient(**validated_data)

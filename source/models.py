@@ -1,7 +1,7 @@
 import datetime
 
 from django.db import models
-from ..core.services.operations import General
+from .services import General
 
 
 class Profile(models.Model):
@@ -18,7 +18,7 @@ class Profile(models.Model):
 
 
 class Patient(models.Model):
-    profile = models.OneToOneField(Profile)
+    profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
     secure = models.BooleanField(default=False)
     phone = models.CharField(max_length=16, unique=True, null=True)  # secure
     sms_code = models.CharField(max_length=4, null=True, default=General().generate_code())  # secure
