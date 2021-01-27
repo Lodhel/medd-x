@@ -13,12 +13,15 @@ class Profile(models.Model):
     def __str__(self):
         return str(self.pk)
 
+    class Meta:
+        db_table = 'profile'
+
 
 class Patient(models.Model):
     profile = models.OneToOneField(Profile)
     secure = models.BooleanField(default=False)
-    phone = models.CharField(max_length=16, null=True)  # secure
-    sms_code = models.CharField(max_length=4, null=True)  # secure
+    phone = models.CharField(max_length=16, unique=True, null=True)  # secure
+    sms_code = models.CharField(max_length=4, null=True, default=General().generate_code())  # secure
     cover_name = models.CharField(max_length=32, null=True)  # anonym
     first_name = models.CharField(max_length=32, null=True)  # secure
     last_name = models.CharField(max_length=32, null=True)  # secure
@@ -38,3 +41,9 @@ class Patient(models.Model):
     language = models.CharField(max_length=2, choices=LANG_CHOICES)
     country = models.CharField(max_length=64)
     city = models.CharField(max_length=64)
+
+    def __str__(self):
+        return str(self.profile)
+
+    class Meta:
+        db_table = 'patient'

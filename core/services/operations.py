@@ -1,4 +1,6 @@
 import hashlib
+import random
+import string
 import uuid
 
 
@@ -10,3 +12,6 @@ class General:
 
     def crypt(self, main_string):
         return hashlib.sha256(main_string.encode()).hexdigest()
+
+    def generate_code(self, size=4, chars=string.digits):
+        return ''.join(random.choice(chars) for _ in range(size))
