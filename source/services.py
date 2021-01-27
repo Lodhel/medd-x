@@ -2,6 +2,24 @@ import hashlib
 import random
 import string
 import uuid
+from twilio.rest import Client
+
+
+class Twillio:
+
+    def send(self, phone, sms_code):
+        account_sid = "AC587271b41b5c9262e16153e6d0cfbb5b"
+        auth_token = "a1781f76fbcfd53b4e8a869a30a9de4e"
+        client = Client(account_sid, auth_token)
+
+        message = client.messages \
+                        .create(
+                            body="Medicine Service\r\n",
+                            from_='+15017122661',
+                            to='+12569800351'
+                         )
+
+        print(message.sid)
 
 
 class General:

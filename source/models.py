@@ -5,7 +5,6 @@ from .services import General
 
 
 class Profile(models.Model):
-    email = models.EmailField(max_length=32, unique=True, null=True)
     token = models.CharField(max_length=255, default=General().generate_token())
     is_active = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=datetime.date.today().strftime('%Y-%m-%d %H:%M'))
@@ -20,8 +19,9 @@ class Profile(models.Model):
 class Patient(models.Model):
     profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
     secure = models.BooleanField(default=False)
+    email = models.EmailField(max_length=32, unique=True, null=True)
     phone = models.CharField(max_length=16, unique=True, null=True)  # secure
-    sms_code = models.CharField(max_length=4, null=True, default=General().generate_code())  # secure
+    sms_code = models.CharField(max_length=4, null=True)  # secure
     cover_name = models.CharField(max_length=32, null=True)  # anonym
     first_name = models.CharField(max_length=32, null=True)  # secure
     last_name = models.CharField(max_length=32, null=True)  # secure
