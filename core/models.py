@@ -12,6 +12,7 @@ class Profile(db.Model):
     is_active = db.Column()
     date_joined = db.Column()
     token = db.Column()
+    password = db.Column()
 
 
 class Patient(db.Model):

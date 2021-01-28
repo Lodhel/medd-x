@@ -6,6 +6,7 @@ from .services import General
 
 class Profile(models.Model):
     token = models.CharField(max_length=255, default=General().generate_token())
+    password = models.CharField(max_length=255)
     is_active = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=datetime.date.today().strftime('%Y-%m-%d %H:%M'))
 
