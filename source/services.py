@@ -8,14 +8,21 @@ from twilio.rest import Client
 class Twillio:
 
     def send(self, phone, sms_code):
-        account_sid = "AC587271b41b5c9262e16153e6d0cfbb5b"
-        auth_token = "a1781f76fbcfd53b4e8a869a30a9de4e"
+        """
+                TEST ACCOUNT SID
+        AC680515c14f185ac882b8006c81dce7a0
+
+        TEST AUTHTOKEN
+        f96557e8d790c80e76507628dd3de33c
+        """
+        account_sid = "AC680515c14f185ac882b8006c81dce7a0"
+        auth_token = "f96557e8d790c80e76507628dd3de33c"
         client = Client(account_sid, auth_token)
 
         message = client.messages \
                         .create(
                             body="Medicine Service\r\n",
-                            from_='+15017122661',
+                            from_='+79796243671',
                             to='+12569800351'
                          )
 

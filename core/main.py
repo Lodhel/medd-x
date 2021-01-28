@@ -5,6 +5,8 @@ from aiohttp import web
 
 import asyncio
 
+from routes import routes
+
 
 class Main:
 
@@ -12,6 +14,7 @@ class Main:
         loop = asyncio.get_event_loop()
 
         app = web.Application(loop=loop)
+        app.router.add_routes(routes)
         cors = aiohttp_cors.setup(app, defaults={
             "*": aiohttp_cors.ResourceOptions(
                     allow_credentials=True,
