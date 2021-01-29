@@ -5,8 +5,8 @@ from . import models, serializers, services
 
 
 class PatientViewSet(viewsets.ModelViewSet):
-    serializer_class = serializers.PatientSerializer
-    queryset = models.Patient.objects.all()
+    serializer_class = serializers.UserSerializer
+    queryset = models.User.objects.all()
 
     def list(self, request, *args, **kwargs):
         token = request._request.GET['token']
@@ -25,21 +25,167 @@ class PatientViewSet(viewsets.ModelViewSet):
 
         return instance
 
-    def make_struct(self, profile, sms_code):
-        return {
+    def create_user(self, profile, sms_code=None, email=None, phone=None):
+        instance = models.User(**{
             "profile": profile,
             "sms_code": sms_code,
-            "email": None,
-            "phone": None,
-            "secure": False
+            "email": email,
+            "phone": phone,
+            "step": 1
+        })
+        instance.save()
+
+        return instance
+
+    def identification(self, role):
+        roles = {
+            1: "company",
+            2: "secure",
+            3: "anonym",
+            4: "other"
         }
 
-    def send(self, phone, email):
-        if phone:
-            pass
-            #services.Twillio().send(validated_data["phone"], sms_code)
-        if email:
-            pass
+        return roles[role]
+
+    def is_step(self, data):
+        pass
+
+    def one_step(self, role, phone=None, email=None, password=None):
+        if role == "secure" or role == "other":
+            sms_code = services.General().generate_code()
+            if not phone:
+                return JsonResponse({"error": "argument not found"})
+            profile = self.create_profile(
+                {
+                    role: True
+                }
+            )
+
+            if not profile:
+                JsonResponse({"error": "create error"})
+
+            user = self.create_user(profile, sms_code, phone=phone)
+            if not user:
+                JsonResponse({"error": "create error"})
+            #services.Twillio().send(phone, sms_code)
+
+            return JsonResponse(
+                {
+                    "id": profile.pk
+                }
+            )
+        else:
+            token = services.General().generate_token()
+            if not email:
+                return JsonResponse({"error": "argument not found"})
+            profile = self.create_profile(
+                {
+                    role: True,
+                    "password": services.General().crypt(password),
+                    "token": token,
+                }
+            )
+
+            user = self.create_user(profile, email=email)
+            if not user:
+                JsonResponse({"error": "create error"})
+
+            return JsonResponse(
+                {
+                    "id": profile.pk
+                }
+            )
+
+    def step_two(self, profile_id, auth):
+        try:
+            user = models.User.objects.get(profile=profile_id)
+            profile = models.Profile.objects.get(pk=profile_id)
+        except:
+            return JsonResponse({"error": "not found"})
+
+        if user.phone:
+            if user.sms_code == auth:
+                profile.is_active = True
+                profile.save()
+                user.step = 2
+                user.save()
+
+                return JsonResponse({"id": profile_id})
+            else:
+                return JsonResponse({"error": "not valid"})
+        else:
+            if profile.token == auth:
+                profile.is_active = True
+                profile.save()
+                user.step = 2
+                user.save()
+
+                return JsonResponse({"id": profile_id})
+            else:
+                return JsonResponse({"error": "not valid"})
+
+    def step_three(self, profile_id, first_name=None, last_name=None, cover_name=None, password=None):
+        try:
+            user = models.User.objects.get(profile=profile_id)
+            profile = models.Profile.objects.get(pk=profile_id)
+        except:
+            return JsonResponse({"error": "not found"})
+
+        if user.role == "other" or user.role == "secure":
+            if not password:
+                return JsonResponse({"error": "field not filled"})
+            profile.password = services.General().crypt(password)
+            profile.save()
+            user.step = 3
+            user.save()
+            return JsonResponse({"id": profile_id})
+
+        if user.role == "anonym":
+            if not cover_name:
+                return JsonResponse({"error": "field not filled"})
+            user.cover_name = cover_name
+            user.step = 3
+            user.save()
+            return JsonResponse({"id": profile_id})
+
+        if not first_name and not last_name:
+            return JsonResponse({"error": "field not filled"})
+        user.first_name = first_name
+        user.last_name = last_name
+        user.step = 3
+        user.save()
+        return JsonResponse({"id": profile_id})
+
+    def four_step(self, profile_id, phone=None, names=None, country=None, city=None, language=None):
+        try:
+            user = models.User.objects.get(profile=profile_id)
+        except:
+            return JsonResponse({"error": "not found"})
+
+        if user.role == "company":
+            if not phone:
+                return JsonResponse({"error": "field not filled"})
+            user.phone = phone
+            user.step = 4
+            user.save()
+            return JsonResponse({"id": profile_id})
+
+        if user.role == "anonym":
+            if not language:
+                return JsonResponse({"error": "field not filled"})
+            user.language = language
+            user.country = country
+            user.city = city
+            user.step = 4
+            user.save()
+            return JsonResponse({"id": profile_id})
+
+        user.first_name = names["first_name"]
+        user.middle_name = names["middle_name"]
+        user.last_name = names["last_name"]
+        user.step = 4
+        user.save()
+        return JsonResponse({"id": profile_id})
 
     @transaction.atomic()
     def create(self, request, *args, **kwargs):
@@ -55,29 +201,22 @@ class PatientViewSet(viewsets.ModelViewSet):
             return JsonResponse({
                 "error": "attribute not found"
             })
-        profile = self.create_profile(
-            {
-                "is_active": False,
-                "password": password
-            }
-        )
-        sms_code = services.General().generate_code()
-        patient = self.make_struct(profile, sms_code)
+        user = self.make_struct(profile, sms_code)
 
         for key, value in data.items():
-            patient[key] = value
+            user[key] = value
 
-        if not patient["email"] and not patient["phone"]:
+        if not user["email"] and not user["phone"]:
             return JsonResponse({
                 "error": "attribute not found"
             })
 
-        del patient["password"]
-        instance = models.Patient(**patient)
+        del user["password"]
+        instance = models.User(**user)
         instance.save()
-        del patient["sms_code"]
-        patient["profile"] = profile.id
+        del user["sms_code"]
+        user["profile"] = profile.id
 
-        self.send(patient["phone"], patient["email"])
+        self.send(user["phone"], user["email"])
 
-        return JsonResponse(patient)
+        return JsonResponse(user)

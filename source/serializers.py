@@ -3,13 +3,13 @@ from rest_framework import serializers
 from . import models, services
 
 
-class PatientSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.Patient
+        model = models.User
 
         fields = (
             'id', 'first_name', 'last_name', 'cover_name',
-            'secure', 'phone', 'language', 'country', 'city'
+            'middle_name', 'phone', 'language', 'country', 'city'
         )
 
         extra_kwargs = {

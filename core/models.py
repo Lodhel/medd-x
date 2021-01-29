@@ -13,10 +13,14 @@ class Profile(db.Model):
     date_joined = db.Column()
     token = db.Column()
     password = db.Column()
+    secure = db.Column()
+    anonym = db.Column()
+    company = db.Column()
+    other = db.Column()
 
 
-class Patient(db.Model):
-    __tablename__ = "patient"
+class User(db.Model):
+    __tablename__ = "user"
 
     id = db.Column(db.Integer(), primary_key=True)
     profile_id = db.Column()
@@ -25,11 +29,11 @@ class Patient(db.Model):
     sms_code = db.Column()
     cover_name = db.Column()
     first_name = db.Column()
+    middle_name = db.Column()
     last_name = db.Column()
     language = db.Column()
     country = db.Column()
     city = db.Column()
-    secure = db.Column()
 
 
 async def connect():
