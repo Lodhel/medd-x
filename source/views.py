@@ -4,7 +4,7 @@ from rest_framework import viewsets
 from . import models, serializers, services
 
 
-class PatientViewSet(viewsets.ModelViewSet):
+class UserViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.UserSerializer
     queryset = models.User.objects.all()
 
@@ -34,7 +34,6 @@ class PatientViewSet(viewsets.ModelViewSet):
             "step": 1
         })
         instance.save()
-
         return instance
 
     def identification(self, role):
@@ -45,48 +44,57 @@ class PatientViewSet(viewsets.ModelViewSet):
             4: "other"
         }
 
-        return roles[role]
+        return roles[int(role)]
 
     def is_step(self, data):
-        pass
+        step = {
+            1: self.one_step(data),
+            2: self.step_two(data),
+            3: self.step_three(data),
+            4: self.step_four(data),
+            5: self.step_five(data),
+            6: self.one_step(data)
+        }
 
-    def one_step(self, role, phone=None, email=None, password=None):
-        if role == "secure" or role == "other":
-            sms_code = services.General().generate_code()
-            if not phone:
-                return JsonResponse({"error": "argument not found"})
-            profile = self.create_profile(
-                {
-                    role: True
-                }
-            )
+        return step[int(data["step"])]
 
-            if not profile:
-                JsonResponse({"error": "create error"})
+    def one_step(self, data):
+        try:
+            role = self.identification(data["role"])
+            if role == "secure" or role == "other":
+                sms_code = services.General().generate_code()
+                profile = self.create_profile(
+                    {
+                        role: True
+                    }
+                )
 
-            user = self.create_user(profile, sms_code, phone=phone)
-            if not user:
-                JsonResponse({"error": "create error"})
-            #services.Twillio().send(phone, sms_code)
+                if not profile:
+                    JsonResponse({"error": "create error"})
 
-            return JsonResponse(
-                {
-                    "id": profile.pk
-                }
-            )
-        else:
+                user = self.create_user(profile, sms_code=sms_code)
+                user.phone = data["phone"]
+                user.save()
+                #services.Twillio().send(phone, sms_code)
+                return JsonResponse(
+                    {
+                        "id": profile.pk
+                    }
+                )
+        except KeyError:
+            pass
+
+        try:
             token = services.General().generate_token()
-            if not email:
-                return JsonResponse({"error": "argument not found"})
             profile = self.create_profile(
                 {
-                    role: True,
-                    "password": services.General().crypt(password),
+                    data["role"]: True,
+                    "password": services.General().crypt(data["password"]),
                     "token": token,
                 }
             )
 
-            user = self.create_user(profile, email=email)
+            user = self.create_user(profile, email=data["email"])
             if not user:
                 JsonResponse({"error": "create error"})
 
@@ -95,8 +103,10 @@ class PatientViewSet(viewsets.ModelViewSet):
                     "id": profile.pk
                 }
             )
+        except KeyError:
+            return JsonResponse({"error": "argument not found"})
 
-    def step_two(self, profile_id, auth):
+    def step_two(self, profile_id, auth=None):
         try:
             user = models.User.objects.get(profile=profile_id)
             profile = models.Profile.objects.get(pk=profile_id)
@@ -156,7 +166,7 @@ class PatientViewSet(viewsets.ModelViewSet):
         user.save()
         return JsonResponse({"id": profile_id})
 
-    def four_step(self, profile_id, phone=None, names=None, country=None, city=None, language=None):
+    def step_four(self, profile_id, phone=None, names=None, country=None, city=None, language=None):
         try:
             user = models.User.objects.get(profile=profile_id)
         except:
@@ -171,7 +181,7 @@ class PatientViewSet(viewsets.ModelViewSet):
             return JsonResponse({"id": profile_id})
 
         if user.role == "anonym":
-            if not language:
+            if not language and not country and not city:
                 return JsonResponse({"error": "field not filled"})
             user.language = language
             user.country = country
@@ -187,36 +197,23 @@ class PatientViewSet(viewsets.ModelViewSet):
         user.save()
         return JsonResponse({"id": profile_id})
 
+    def step_five(self, profile_id, country=None, city=None, language=None):
+        try:
+            user = models.User.objects.get(profile=profile_id)
+        except:
+            return JsonResponse({"error": "not found"})
+        if not language and not country and not city:
+            return JsonResponse({"error": "field not filled"})
+        user.language = language
+        user.country = country
+        user.city = city
+        user.step = 5
+        user.save()
+        return JsonResponse({"id": profile_id})
+
+
     @transaction.atomic()
     def create(self, request, *args, **kwargs):
-        instance = super().create(request)
-        try:
-            return JsonResponse(instance)
-        except TypeError:
-            pass
         data = request.data
-        try:
-            password = services.General().crypt(data["password"])
-        except KeyError:
-            return JsonResponse({
-                "error": "attribute not found"
-            })
-        user = self.make_struct(profile, sms_code)
-
-        for key, value in data.items():
-            user[key] = value
-
-        if not user["email"] and not user["phone"]:
-            return JsonResponse({
-                "error": "attribute not found"
-            })
-
-        del user["password"]
-        instance = models.User(**user)
-        instance.save()
-        del user["sms_code"]
-        user["profile"] = profile.id
-
-        self.send(user["phone"], user["email"])
-
-        return JsonResponse(user)
+        instance = self.is_step(data)
+        return instance
