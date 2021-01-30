@@ -6,6 +6,7 @@ from . import views
 
 router = DefaultRouter()
 router.register('company', views.CompanyViewSet)
+router.register('anonym', views.AnonymViewSet)
 
 
 urlpatterns = [

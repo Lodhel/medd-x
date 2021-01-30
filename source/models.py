@@ -46,7 +46,7 @@ class Company(models.Model):
         ('4', 'Pharmaceutical company'),
         ('5', 'Charity foundation')
     )
-    type = models.CharField(max_length=64, choices=COMPANY_TYPES, default="Clinic")
+    type_c = models.CharField(max_length=64, choices=COMPANY_TYPES, default="Clinic")
     name = models.CharField(max_length=64, null=True)
     step = models.IntegerField(default=0)
     representatives_phones = ArrayField(
@@ -63,3 +63,15 @@ class Company(models.Model):
 
     class Meta:
         db_table = 'company'
+
+
+class Anonym(models.Model):
+    profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
+    cover_name = models.CharField(max_length=64, null=True)
+    step = models.IntegerField(default=0)
+
+    def __str__(self):
+        return str(self.profile)
+
+    class Meta:
+        db_table = 'anonym'

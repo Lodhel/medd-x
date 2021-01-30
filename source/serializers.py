@@ -10,3 +10,12 @@ class CompanySerializer(serializers.ModelSerializer):
         fields = (
             'id', 'language', 'country', 'city'
         )
+
+
+class AnonymSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Anonym
+
+        fields = (
+            'id', 'language', 'country', 'city'
+        )
