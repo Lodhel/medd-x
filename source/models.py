@@ -2,6 +2,7 @@ import datetime
 
 from django.db import models
 from .services import General
+from django.contrib.postgres.fields import ArrayField
 
 
 class Profile(models.Model):
@@ -9,27 +10,9 @@ class Profile(models.Model):
     password = models.CharField(max_length=255, null=True)
     is_active = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=datetime.date.today().strftime('%Y-%m-%d %H:%M'))
-    secure = models.BooleanField(default=False)
-    anonym = models.BooleanField(default=False)
-    company = models.BooleanField(default=False)
-    other = models.BooleanField(default=False)
-
-    def __str__(self):
-        return str(self.pk)
-
-    class Meta:
-        db_table = 'profile'
-
-
-class User(models.Model):
-    profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
-    email = models.EmailField(max_length=32, unique=True, null=True)
-    phone = models.CharField(max_length=16, unique=True, null=True)  # secure
-    sms_code = models.CharField(max_length=4, null=True)  # secure
-    cover_name = models.CharField(max_length=64, null=True)  # anonym
-    first_name = models.CharField(max_length=64, null=True)  # secure
-    middle_name = models.CharField(max_length=64, null=True)  # company
-    last_name = models.CharField(max_length=64, null=True)  # secure
+    email = models.EmailField(max_length=32, null=True)
+    phone = models.CharField(max_length=16, null=True)
+    sms_code = models.CharField(max_length=4, null=True)
     LANG_CHOICES = (
         ('en', 'en'),
         ('de', 'de'),
@@ -46,10 +29,37 @@ class User(models.Model):
     language = models.CharField(max_length=2, choices=LANG_CHOICES, default="en")
     country = models.CharField(max_length=64, default="Russia")
     city = models.CharField(max_length=64, default="Moscow")
+
+    def __str__(self):
+        return str(self.pk)
+
+    class Meta:
+        db_table = 'profile'
+
+
+class Company(models.Model):
+    profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
+    COMPANY_TYPES = (
+        ('1', 'Clinic'),
+        ('2', 'Insurance company'),
+        ('3', 'Medtravel company'),
+        ('4', 'Pharmaceutical company'),
+        ('5', 'Charity foundation')
+    )
+    type = models.CharField(max_length=64, choices=COMPANY_TYPES, default="Clinic")
+    name = models.CharField(max_length=64, null=True)
     step = models.IntegerField(default=0)
+    representatives_phones = ArrayField(
+        models.CharField(max_length=32),
+        null=True
+    )
+    representatives_emails = ArrayField(
+        models.EmailField(max_length=64),
+        null=True
+    )
 
     def __str__(self):
         return str(self.profile)
 
     class Meta:
-        db_table = 'user'
+        db_table = 'company'
