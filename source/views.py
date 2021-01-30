@@ -277,7 +277,7 @@ class CompanyViewSet(viewsets.ModelViewSet):
 
             user = UserViewSet().create_user(profile, models.Company)
             if not user:
-                JsonResponse({"error": "create error"})
+                JsonResponse({"error": "create error", "success": False})
 
             return JsonResponse(
                 {
@@ -285,19 +285,19 @@ class CompanyViewSet(viewsets.ModelViewSet):
                 }
             )
         except KeyError:
-            return JsonResponse({"error": "argument not found"})
+            return JsonResponse({"error": "argument not found", "success": False})
 
     def step_two(self, data):
         try:
             profile_id = data["profile_id"]
             auth = data["auth"]
         except KeyError:
-            return JsonResponse({"error": "argument not found"})
+            return JsonResponse({"error": "argument not found", "success": False})
         try:
             profile = models.Profile.objects.get(pk=profile_id)
             user = models.Company.objects.get(profile=profile_id)
         except:
-            return JsonResponse({"error": "not found"})
+            return JsonResponse({"error": "not found", "success": False})
 
         if profile.token == auth:
             profile.is_active = True
@@ -305,9 +305,9 @@ class CompanyViewSet(viewsets.ModelViewSet):
             user.step = 2
             user.save()
 
-            return JsonResponse({"id": profile_id})
+            return JsonResponse({"id": profile_id, "success": True})
         else:
-            return JsonResponse({"error": "not valid"})
+            return JsonResponse({"error": "not valid", "success": False})
 
     def step_three(self, data):
         try:
@@ -315,29 +315,29 @@ class CompanyViewSet(viewsets.ModelViewSet):
             name = data["name"]
             type_c = data["type_c"]
         except KeyError:
-            return JsonResponse({"error": "argument not found"})
+            return JsonResponse({"error": "argument not found", "success": False})
         try:
             user = models.Company.objects.get(profile=profile_id)
         except:
-            return JsonResponse({"error": "not found"})
+            return JsonResponse({"error": "not found", "success": False})
 
         user.name = name
         user.type_c = type_c
         user.step = 3
         user.save()
-        return JsonResponse({"id": profile_id})
+        return JsonResponse({"id": profile_id, "success": True})
 
     def step_four(self, data):
         try:
             profile_id = data["profile_id"]
             phone = data["phone"]
         except KeyError:
-            return JsonResponse({"error": "argument not found"})
+            return JsonResponse({"error": "argument not found", "success": False})
         try:
             user = models.Company.objects.get(profile=profile_id)
             profile = models.Profile.objects.get(id=profile_id)
         except:
-            return JsonResponse({"error": "not found"})
+            return JsonResponse({"error": "not found", "success": False})
         profile.phone = phone
         user.step = 4
         user.save()
@@ -350,19 +350,17 @@ class CompanyViewSet(viewsets.ModelViewSet):
             country = data["country"]
             language = data["language"]
         except KeyError:
-            return JsonResponse({"error": "argument not found"})
+            return JsonResponse({"error": "argument not found", "success": False})
         try:
             user = models.Company.objects.get(profile=profile_id)
         except:
-            return JsonResponse({"error": "not found"})
-        if not language and not country and not city:
-            return JsonResponse({"error": "field not filled"})
+            return JsonResponse({"error": "not found", "success": False})
         user.language = language
         user.country = country
         user.city = city
         user.step = 5
         user.save()
-        return JsonResponse({"id": profile_id})
+        return JsonResponse({"id": profile_id, "success": True})
 
     def step_six(self, data):
         try:
@@ -370,17 +368,17 @@ class CompanyViewSet(viewsets.ModelViewSet):
             representatives_phones = data["representatives_phones"]
             representatives_emails = data["representatives_emails"]
         except KeyError:
-            return JsonResponse({"error": "argument not found"})
+            return JsonResponse({"error": "argument not found", "success": False})
         try:
             user = models.Company.objects.get(profile=profile_id)
         except:
-            return JsonResponse({"error": "not found"})
+            return JsonResponse({"error": "not found", "success": False})
 
         user.representatives_phones = representatives_phones
         user.representatives_emails = representatives_emails
         user.step = 6
         user.save()
-        return JsonResponse({"id": profile_id})
+        return JsonResponse({"id": profile_id, "success": True})
 
     @transaction.atomic()
     def create(self, request, *args, **kwargs):
@@ -427,27 +425,28 @@ class AnonymViewSet(viewsets.ModelViewSet):
 
             user = UserViewSet().create_user(profile, models.Anonym)
             if not user:
-                JsonResponse({"error": "create error"})
+                JsonResponse({"error": "create error", "success": False})
 
             return JsonResponse(
                 {
-                    "id": profile.pk
+                    "id": profile.pk,
+                    "success": True
                 }
             )
         except KeyError:
-            return JsonResponse({"error": "argument not found"})
+            return JsonResponse({"error": "argument not found", "success": False})
 
     def step_two(self, data):
         try:
             profile_id = data["profile_id"]
             auth = data["auth"]
         except KeyError:
-            return JsonResponse({"error": "argument not found"})
+            return JsonResponse({"error": "argument not found", "success": False})
         try:
             profile = models.Profile.objects.get(pk=profile_id)
             user = models.Anonym.objects.get(profile=profile_id)
         except:
-            return JsonResponse({"error": "not found"})
+            return JsonResponse({"error": "not found", "success": False})
 
         if profile.token == auth:
             profile.is_active = True
@@ -455,20 +454,20 @@ class AnonymViewSet(viewsets.ModelViewSet):
             user.step = 2
             user.save()
 
-            return JsonResponse({"id": profile_id})
+            return JsonResponse({"id": profile_id, "success": True})
         else:
-            return JsonResponse({"error": "not valid"})
+            return JsonResponse({"error": "not valid", "success": False})
 
     def step_three(self, data):
         try:
             profile_id = data["profile_id"]
             cover_name = data["cover_name"]
         except KeyError:
-            return JsonResponse({"error": "argument not found"})
+            return JsonResponse({"error": "argument not found", "success": False})
         try:
             user = models.Anonym.objects.get(profile=profile_id)
         except:
-            return JsonResponse({"error": "not found"})
+            return JsonResponse({"error": "not found", "success": False})
 
         user.cover_name = cover_name
         user.step = 3
@@ -482,19 +481,17 @@ class AnonymViewSet(viewsets.ModelViewSet):
             country = data["country"]
             language = data["language"]
         except KeyError:
-            return JsonResponse({"error": "argument not found"})
+            return JsonResponse({"error": "argument not found", "success": False})
         try:
             user = models.Anonym.objects.get(profile=profile_id)
         except:
-            return JsonResponse({"error": "not found"})
-        if not language and not country and not city:
-            return JsonResponse({"error": "field not filled"})
+            return JsonResponse({"error": "not found", "success": False})
         user.language = language
         user.country = country
         user.city = city
         user.step = 5
         user.save()
-        return JsonResponse({"id": profile_id})
+        return JsonResponse({"id": profile_id, "success": True})
 
     @transaction.atomic()
     def create(self, request, *args, **kwargs):
