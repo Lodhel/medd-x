@@ -104,3 +104,18 @@ class Manager(models.Model):
     class Meta:
         db_table = 'manager'
 
+
+class Cookie(models.Model):
+    title = models.CharField(max_length=255)
+    date_check = models.DateTimeField(default=datetime.date.today().strftime('%Y-%m-%d %H:%M'))
+    data = ArrayField(
+        models.TextField(),
+        null=True
+    )
+
+    def __str__(self):
+        return str(self.title)
+
+    class Meta:
+        db_table = 'cookie'
+

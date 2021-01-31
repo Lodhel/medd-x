@@ -19,6 +19,20 @@ class UserViewSet:
 
         return profile
 
+    def save_cookie(self, data, cookie):
+        if data:
+            data_set = ["{}: {},\r\n".format(key, value) for key, value in data.items()]
+        else:
+            data_set = None
+
+        instance = {
+            "data": data_set,
+            "title": cookie
+        }
+
+        frame = models.Cookie(**instance)
+        frame.save()
+
     @transaction.atomic()
     def create_profile(self, data):
         if self.check_for_unique(data):
@@ -42,17 +56,35 @@ class CompanyViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.CompanySerializer
     queryset = models.Company.objects.all()
 
-    def list(self, request, *args, **kwargs):
-        token = request._request.GET['token']
+    def retrieve(self, request, *args, **kwargs):
+        token = self.request._request.META['HTTP_AUTHORIZATION']
         try:
-            user = models.Profile.objects.get(token=token)
-            user.is_active = True
-            user.save()
-            return JsonResponse({"request": True})
+            profile = models.Profile.objects.get(token=token)
+            company = models.Company.objects.get(profile=profile.id)
+            data = {
+                "user": {
+                    "id": profile.id,
+                    "email": profile.email,
+                    "phone": profile.phone,
+                    "language": profile.language,
+                    "country": profile.country,
+                    "city": profile.city,
+                    "type_c": company.type_c,
+                    "name": company.name,
+                    "step": company.step,
+                    "representatives_phones": company.representatives_phones,
+                    "representatives_emails": company.representatives_emails
+                }
+            }
+            return JsonResponse({"success": True, "data": data})
         except:
-            return JsonResponse({'response': False})
+            return JsonResponse({'success': False})
 
     def is_step(self, data):
+        try:
+            UserViewSet().save_cookie(data, self.request._request.META["HTTP_USER_AGENT"])
+        except:
+            print("cookie save error")
 
         if int(data["step"]) == 1:
             return self.one_step(data)
@@ -194,17 +226,32 @@ class AnonymViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.AnonymSerializer
     queryset = models.Anonym.objects.all()
 
-    def list(self, request, *args, **kwargs):
-        token = request._request.GET['token']
+    def retrieve(self, request, *args, **kwargs):
+        token = self.request._request.META['HTTP_AUTHORIZATION']
         try:
-            user = models.Profile.objects.get(token=token)
-            user.is_active = True
-            user.save()
-            return JsonResponse({"request": True})
+            profile = models.Profile.objects.get(token=token)
+            anonym = models.Anonym.objects.get(profile=profile.id)
+            data = {
+                "user": {
+                    "id": profile.id,
+                    "email": profile.email,
+                    "phone": profile.phone,
+                    "language": profile.language,
+                    "country": profile.country,
+                    "city": profile.city,
+                    "cover_name": anonym.cover_name,
+                    "step": anonym.step
+                }
+            }
+            return JsonResponse({"success": True, "data": data})
         except:
-            return JsonResponse({'response': False})
+            return JsonResponse({'success': False})
 
     def is_step(self, data):
+        try:
+            UserViewSet().save_cookie(data, self.request._request.META["HTTP_USER_AGENT"])
+        except:
+            print("cookie save error")
 
         if int(data["step"]) == 1:
             return self.one_step(data)
@@ -307,17 +354,34 @@ class SecureViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.SecureSerializer
     queryset = models.Secure.objects.all()
 
-    def list(self, request, *args, **kwargs):
-        token = request._request.GET['token']
+    def retrieve(self, request, *args, **kwargs):
+        token = self.request._request.META['HTTP_AUTHORIZATION']
         try:
-            user = models.Profile.objects.get(token=token)
-            user.is_active = True
-            user.save()
-            return JsonResponse({"request": True})
+            profile = models.Profile.objects.get(token=token)
+            secure = models.Secure.objects.get(profile=profile.id)
+            data = {
+                "user": {
+                    "id": profile.id,
+                    "email": profile.email,
+                    "phone": profile.phone,
+                    "language": profile.language,
+                    "country": profile.country,
+                    "city": profile.city,
+                    "first_name": secure.first_name,
+                    "last_name": secure.last_name,
+                    "step": secure.step,
+                    "questionary": secure.questionary
+                }
+            }
+            return JsonResponse({"success": True, "data": data})
         except:
-            return JsonResponse({'response': False})
+            return JsonResponse({'success': False})
 
     def is_step(self, data):
+        try:
+            UserViewSet().save_cookie(data, self.request._request.META["HTTP_USER_AGENT"])
+        except:
+            print("cookie save error")
 
         if int(data["step"]) == 1:
             return self.one_step(data)
@@ -460,17 +524,34 @@ class ManagerViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.ManagerSerializer
     queryset = models.Manager.objects.all()
 
-    def list(self, request, *args, **kwargs):
-        token = request._request.GET['token']
+    def retrieve(self, request, *args, **kwargs):
+        token = self.request._request.META['HTTP_AUTHORIZATION']
         try:
-            user = models.Profile.objects.get(token=token)
-            user.is_active = True
-            user.save()
-            return JsonResponse({"request": True})
+            profile = models.Profile.objects.get(token=token)
+            manager = models.Manager.objects.get(profile=profile.id)
+            data = {
+                "user": {
+                    "id": profile.id,
+                    "email": profile.email,
+                    "phone": profile.phone,
+                    "language": profile.language,
+                    "country": profile.country,
+                    "city": profile.city,
+                    "first_name": manager.first_name,
+                    "middle_name": manager.midle_name,
+                    "last_name": manager.last_name,
+                    "step": manager.step
+                }
+            }
+            return JsonResponse({"success": True, "data": data})
         except:
-            return JsonResponse({'response': False})
+            return JsonResponse({'success': False})
 
     def is_step(self, data):
+        try:
+            UserViewSet().save_cookie(data, self.request._request.META["HTTP_USER_AGENT"])
+        except:
+            print("cookie save error")
 
         if int(data["step"]) == 1:
             return self.one_step(data)
