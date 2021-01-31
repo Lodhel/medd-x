@@ -6,8 +6,23 @@ from . import models, serializers, services
 
 class UserViewSet:
 
+    def check_for_unique(self, data):
+        try:
+            profile = models.Profile.objects.get(phone=data["phone"])
+        except:
+            profile = None
+
+        try:
+            profile = models.Profile.objects.get(email=data["email"])
+        except:
+            profile = None
+
+        return profile
+
     @transaction.atomic()
     def create_profile(self, data):
+        if self.check_for_unique(data):
+            return JsonResponse({"error": "phone or email of unique", "success": False})
         instance = models.Profile(**data)
         instance.save()
 
