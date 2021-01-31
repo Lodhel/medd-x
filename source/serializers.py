@@ -19,3 +19,12 @@ class AnonymSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'language', 'country', 'city'
         )
+
+
+class SecureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Anonym
+
+        fields = (
+            'id', 'language', 'country', 'city'
+        )

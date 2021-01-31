@@ -75,3 +75,17 @@ class Anonym(models.Model):
 
     class Meta:
         db_table = 'anonym'
+
+
+class Secure(models.Model):
+    profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=64, null=True)
+    last_name = models.CharField(max_length=64, null=True)
+    questionary = models.TextField()
+    step = models.IntegerField(default=0)
+
+    def __str__(self):
+        return str(self.profile)
+
+    class Meta:
+        db_table = 'secure'
