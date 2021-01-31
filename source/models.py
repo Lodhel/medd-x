@@ -89,3 +89,18 @@ class Secure(models.Model):
 
     class Meta:
         db_table = 'secure'
+
+
+class Manager(models.Model):
+    profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=64, null=True)
+    middle_name = models.CharField(max_length=64, null=True)
+    last_name = models.CharField(max_length=64, null=True)
+    step = models.IntegerField(default=0)
+
+    def __str__(self):
+        return str(self.profile)
+
+    class Meta:
+        db_table = 'manager'
+

@@ -28,3 +28,12 @@ class SecureSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'language', 'country', 'city'
         )
+
+
+class ManagerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Manager
+
+        fields = (
+            'id', 'language', 'country', 'city'
+        )

@@ -22,183 +22,6 @@ class UserViewSet:
         instance.save()
         return instance
 
-"""
-
-
-    def list(self, request, *args, **kwargs):
-        token = request._request.GET['token']
-        try:
-            user = models.Profile.objects.get(token=token)
-            user.is_active = True
-            user.save()
-            return JsonResponse({"request": True})
-        except:
-            return JsonResponse({'response': False})
-
-    @transaction.atomic()
-    def create_profile(self, data):
-        instance = models.Profile(**data)
-        instance.save()
-
-        return instance
-
-    def create_user(self, profile, sms_code=None, email=None, phone=None):
-        instance = models.User(**{
-            "profile": profile,
-            "sms_code": sms_code,
-            "email": email,
-            "phone": phone,
-            "step": 1
-        })
-        instance.save()
-        return instance
-
-    def identification(self, role):
-        roles = {
-            1: "company",
-            2: "secure",
-            3: "anonym",
-            4: "other"
-        }
-
-        return roles[int(role)]
-
-    def is_step(self, data):
-        step = {
-            1: self.one_step(data),
-            2: self.step_two(data),
-            3: self.step_three(data),
-            4: self.step_four(data),
-            5: self.step_five(data),
-            6: self.one_step(data)
-        }
-
-        return step[int(data["step"])]
-
-    def one_step(self, data):
-        try:
-            role = self.identification(data["role"])
-            if role == "secure" or role == "other":
-                
-        except KeyError:
-            pass
-
-        try:
-            token = services.General().generate_token()
-            profile = self.create_profile(
-                {
-                    data["role"]: True,
-                    "password": services.General().crypt(data["password"]),
-                    "token": token,
-                }
-            )
-
-            user = self.create_user(profile, email=data["email"])
-            if not user:
-                JsonResponse({"error": "create error"})
-
-            return JsonResponse(
-                {
-                    "id": profile.pk
-                }
-            )
-        except KeyError:
-            return JsonResponse({"error": "argument not found"})
-
-    def step_two(self, profile_id, auth=None):
-        try:
-            user = models.User.objects.get(profile=profile_id)
-            profile = models.Profile.objects.get(pk=profile_id)
-        except:
-            return JsonResponse({"error": "not found"})
-
-        if user.phone:
-        else:
-            if profile.token == auth:
-                profile.is_active = True
-                profile.save()
-                user.step = 2
-                user.save()
-
-                return JsonResponse({"id": profile_id})
-            else:
-                return JsonResponse({"error": "not valid"})
-
-    def step_three(self, profile_id, first_name=None, last_name=None, cover_name=None, password=None):
-        try:
-            user = models.User.objects.get(profile=profile_id)
-            profile = models.Profile.objects.get(pk=profile_id)
-        except:
-            return JsonResponse({"error": "not found"})
-
-        if user.role == "other" or user.role == "secure":
-            if not password:
-                return JsonResponse({"error": "field not filled"})
-            
-
-        if user.role == "anonym":
-            if not cover_name:
-                return JsonResponse({"error": "field not filled"})
-            user.cover_name = cover_name
-            user.step = 3
-            user.save()
-            return JsonResponse({"id": profile_id})
-
-        if not first_name and not last_name:
-            return JsonResponse({"error": "field not filled"})
-        user.first_name = first_name
-        user.last_name = last_name
-        user.step = 3
-        user.save()
-        return JsonResponse({"id": profile_id})
-
-    def step_four(self, profile_id, phone=None, names=None, country=None, city=None, language=None):
-        try:
-            user = models.User.objects.get(profile=profile_id)
-        except:
-            return JsonResponse({"error": "not found"})
-
-        if user.role == "company":
-            if not phone:
-                return JsonResponse({"error": "field not filled"})
-            user.phone = phone
-            user.step = 4
-            user.save()
-            return JsonResponse({"id": profile_id})
-
-        if user.role == "anonym":
-            if not language and not country and not city:
-                return JsonResponse({"error": "field not filled"})
-            user.language = language
-            user.country = country
-            user.city = city
-            user.step = 4
-            user.save()
-            return JsonResponse({"id": profile_id})
-
-        
-        return JsonResponse({"id": profile_id})
-
-    def step_five(self, profile_id, country=None, city=None, language=None):
-        try:
-            user = models.User.objects.get(profile=profile_id)
-        except:
-            return JsonResponse({"error": "not found"})
-        if not language and not country and not city:
-            return JsonResponse({"error": "field not filled"})
-        user.language = language
-        user.country = country
-        user.city = city
-        user.step = 5
-        user.save()
-        return JsonResponse({"id": profile_id})
-
-    @transaction.atomic()
-    def create(self, request, *args, **kwargs):
-        data = request.data
-        instance = self.is_step(data)
-        return instance
-"""
 
 class CompanyViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.CompanySerializer
@@ -608,6 +431,143 @@ class SecureViewSet(viewsets.ModelViewSet):
 
         user.questionary = questionary
         user.step = 6
+        user.save()
+        return JsonResponse({"id": profile_id, "success": True})
+
+    @transaction.atomic()
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        instance = self.is_step(data)
+        return instance
+
+
+class ManagerViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.ManagerSerializer
+    queryset = models.Manager.objects.all()
+
+    def list(self, request, *args, **kwargs):
+        token = request._request.GET['token']
+        try:
+            user = models.Profile.objects.get(token=token)
+            user.is_active = True
+            user.save()
+            return JsonResponse({"request": True})
+        except:
+            return JsonResponse({'response': False})
+
+    def is_step(self, data):
+
+        if int(data["step"]) == 1:
+            return self.one_step(data)
+        elif int(data["step"]) == 2:
+            return self.step_two(data)
+        elif int(data["step"]) == 3:
+            return self.step_three(data)
+        elif int(data["step"]) == 4:
+            return self.step_four(data)
+        elif int(data["step"]) == 5:
+            return self.step_five(data)
+
+    def one_step(self, data):
+        try:
+            sms_code = services.General().generate_code()
+            profile = UserViewSet().create_profile(
+                {
+                    "password": services.General().crypt(data["password"]),
+                    "sms_code": sms_code,
+                    "phone": data["phone"]
+                }
+            )
+
+            user = UserViewSet().create_user(profile, models.Secure)
+            # services.Twillio().send(phone, sms_code)
+            if not user:
+                JsonResponse({"error": "create error", "success": False})
+
+            return JsonResponse(
+                {
+                    "id": profile.pk,
+                    "success": True
+                }
+            )
+        except KeyError:
+            return JsonResponse({"error": "argument not found", "success": False})
+
+    def step_two(self, data):
+        try:
+            profile_id = data["profile_id"]
+            auth = data["auth"]
+        except KeyError:
+            return JsonResponse({"error": "argument not found", "success": False})
+        try:
+            profile = models.Profile.objects.get(pk=profile_id)
+            user = models.Manager.objects.get(profile=profile_id)
+        except:
+            return JsonResponse({"error": "not found", "success": False})
+
+        if profile.sms_code == auth:
+            profile.is_active = True
+            profile.save()
+            user.step = 2
+            user.save()
+
+            return JsonResponse({"id": profile_id, "success": True})
+        else:
+            return JsonResponse({"error": "not valid", "success": False})
+
+    def step_three(self, data):
+        try:
+            profile_id = data["profile_id"]
+            password = data["password"]
+        except KeyError:
+            return JsonResponse({"error": "argument not found", "success": False})
+        try:
+            profile = models.Profile.objects.get(pk=profile_id)
+            user = models.Manager.objects.get(profile=profile_id)
+        except:
+            return JsonResponse({"error": "not found", "success": False})
+
+        profile.password = services.General().crypt(password)
+        profile.save()
+        user.step = 3
+        user.save()
+        return JsonResponse({"id": profile_id, "success": True})
+
+    def step_four(self, data):
+        try:
+            profile_id = data["profile_id"]
+            first_name = data["first_name"]
+            middle_name = data["middle_name"]
+            last_name = data["last_name"]
+        except KeyError:
+            return JsonResponse({"error": "argument not found", "success": False})
+        try:
+            user = models.Manager.objects.get(profile=profile_id)
+        except:
+            return JsonResponse({"error": "not found", "success": False})
+        user.first_name = first_name
+        user.middle_name = middle_name
+        user.last_name = last_name
+        user.step = 4
+        user.save()
+        return JsonResponse({"id": profile_id, "success": True})
+
+    def step_five(self, data):
+        try:
+            profile_id = data["profile_id"]
+            city = data["city"]
+            country = data["country"]
+            language = data["language"]
+        except KeyError:
+            return JsonResponse({"error": "argument not found", "success": False})
+        try:
+            user = models.Manager.objects.get(profile=profile_id)
+        except:
+            return JsonResponse({"error": "not found", "success": False})
+        user.language = language
+        user.country = country
+        user.city = city
+        user.step = 5
         user.save()
         return JsonResponse({"id": profile_id, "success": True})
 
