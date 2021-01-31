@@ -7,27 +7,26 @@ from . import models, serializers, services
 class UserViewSet:
 
     def check_for_unique(self, data):
-        try:
+        if "phone" in data:
             profile = models.Profile.objects.get(phone=data["phone"])
-        except:
-            profile = None
-
-        try:
+            return profile
+        elif "email" in data:
             profile = models.Profile.objects.get(email=data["email"])
-        except:
+        else:
             profile = None
 
         return profile
 
-    def save_cookie(self, data, cookie):
+    def save_cookie(self, data, cookie, url):
         if data:
-            data_set = ["{}: {},\r\n".format(key, value) for key, value in data.items()]
+            data_set = ["{}: {},\r\n".format(key, value) for key, value in data.items() if key != "password"]
         else:
             data_set = None
 
         instance = {
             "data": data_set,
-            "title": cookie
+            "title": cookie,
+            "src": url
         }
 
         frame = models.Cookie(**instance)
@@ -36,7 +35,7 @@ class UserViewSet:
     @transaction.atomic()
     def create_profile(self, data):
         if self.check_for_unique(data):
-            return JsonResponse({"error": "phone or email of unique", "success": False})
+            return None
         instance = models.Profile(**data)
         instance.save()
 
@@ -57,6 +56,10 @@ class CompanyViewSet(viewsets.ModelViewSet):
     queryset = models.Company.objects.all()
 
     def retrieve(self, request, *args, **kwargs):
+        try:
+            UserViewSet().save_cookie(self.request.data, self.request._request.META["HTTP_USER_AGENT"], self.request._request.META["PATH_INFO"])
+        except:
+            print("cookie save error")
         token = self.request._request.META['HTTP_AUTHORIZATION']
         try:
             profile = models.Profile.objects.get(token=token)
@@ -82,7 +85,7 @@ class CompanyViewSet(viewsets.ModelViewSet):
 
     def is_step(self, data):
         try:
-            UserViewSet().save_cookie(data, self.request._request.META["HTTP_USER_AGENT"])
+            UserViewSet().save_cookie(data, self.request._request.META["HTTP_USER_AGENT"], self.request._request.META["PATH_INFO"])
         except:
             print("cookie save error")
 
@@ -109,10 +112,12 @@ class CompanyViewSet(viewsets.ModelViewSet):
                     "email": data["email"]
                 }
             )
+            if not profile:
+                return JsonResponse({"error": "email field is unique", "success": False})
 
             user = UserViewSet().create_user(profile, models.Company)
             if not user:
-                JsonResponse({"error": "create error", "success": False})
+                return JsonResponse({"error": "create error", "success": False})
 
             return JsonResponse(
                 {
@@ -227,6 +232,10 @@ class AnonymViewSet(viewsets.ModelViewSet):
     queryset = models.Anonym.objects.all()
 
     def retrieve(self, request, *args, **kwargs):
+        try:
+            UserViewSet().save_cookie(self.request.data, self.request._request.META["HTTP_USER_AGENT"], self.request._request.META["PATH_INFO"])
+        except:
+            print("cookie save error")
         token = self.request._request.META['HTTP_AUTHORIZATION']
         try:
             profile = models.Profile.objects.get(token=token)
@@ -249,7 +258,7 @@ class AnonymViewSet(viewsets.ModelViewSet):
 
     def is_step(self, data):
         try:
-            UserViewSet().save_cookie(data, self.request._request.META["HTTP_USER_AGENT"])
+            UserViewSet().save_cookie(data, self.request._request.META["HTTP_USER_AGENT"], self.request._request.META["PATH_INFO"])
         except:
             print("cookie save error")
 
@@ -272,10 +281,12 @@ class AnonymViewSet(viewsets.ModelViewSet):
                     "email": data["email"]
                 }
             )
+            if not profile:
+                return JsonResponse({"error": "email field is unique", "success": False})
 
             user = UserViewSet().create_user(profile, models.Anonym)
             if not user:
-                JsonResponse({"error": "create error", "success": False})
+                return JsonResponse({"error": "create error", "success": False})
 
             return JsonResponse(
                 {
@@ -355,6 +366,10 @@ class SecureViewSet(viewsets.ModelViewSet):
     queryset = models.Secure.objects.all()
 
     def retrieve(self, request, *args, **kwargs):
+        try:
+            UserViewSet().save_cookie(self.request.data, self.request._request.META["HTTP_USER_AGENT"], self.request._request.META["PATH_INFO"])
+        except:
+            print("cookie save error")
         token = self.request._request.META['HTTP_AUTHORIZATION']
         try:
             profile = models.Profile.objects.get(token=token)
@@ -379,7 +394,7 @@ class SecureViewSet(viewsets.ModelViewSet):
 
     def is_step(self, data):
         try:
-            UserViewSet().save_cookie(data, self.request._request.META["HTTP_USER_AGENT"])
+            UserViewSet().save_cookie(data, self.request._request.META["HTTP_USER_AGENT"], self.request._request.META["PATH_INFO"])
         except:
             print("cookie save error")
 
@@ -406,11 +421,13 @@ class SecureViewSet(viewsets.ModelViewSet):
                     "phone": data["phone"]
                 }
             )
+            if not profile:
+                return JsonResponse({"error": "email field is unique", "success": False})
 
             user = UserViewSet().create_user(profile, models.Secure)
             # services.Twillio().send(phone, sms_code)
             if not user:
-                JsonResponse({"error": "create error", "success": False})
+                return JsonResponse({"error": "create error", "success": False})
 
             return JsonResponse(
                 {
@@ -525,6 +542,10 @@ class ManagerViewSet(viewsets.ModelViewSet):
     queryset = models.Manager.objects.all()
 
     def retrieve(self, request, *args, **kwargs):
+        try:
+            UserViewSet().save_cookie(self.request.data, self.request._request.META["HTTP_USER_AGENT"], self.request._request.META["PATH_INFO"])
+        except:
+            print("cookie save error")
         token = self.request._request.META['HTTP_AUTHORIZATION']
         try:
             profile = models.Profile.objects.get(token=token)
@@ -549,7 +570,7 @@ class ManagerViewSet(viewsets.ModelViewSet):
 
     def is_step(self, data):
         try:
-            UserViewSet().save_cookie(data, self.request._request.META["HTTP_USER_AGENT"])
+            UserViewSet().save_cookie(data, self.request._request.META["HTTP_USER_AGENT"], self.request._request.META["PATH_INFO"])
         except:
             print("cookie save error")
 
@@ -574,11 +595,13 @@ class ManagerViewSet(viewsets.ModelViewSet):
                     "phone": data["phone"]
                 }
             )
+            if not profile:
+                return JsonResponse({"error": "email field is unique", "success": False})
 
             user = UserViewSet().create_user(profile, models.Secure)
             # services.Twillio().send(phone, sms_code)
             if not user:
-                JsonResponse({"error": "create error", "success": False})
+                return JsonResponse({"error": "create error", "success": False})
 
             return JsonResponse(
                 {

@@ -112,6 +112,7 @@ class Cookie(models.Model):
         models.TextField(),
         null=True
     )
+    src = models.URLField()
 
     def __str__(self):
         return str(self.title)
