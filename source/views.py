@@ -8,14 +8,20 @@ class UserViewSet:
 
     def check_for_unique(self, data):
         if "phone" in data:
-            profile = models.Profile.objects.get(phone=data["phone"])
-            return profile
+            try:
+                profile = models.Profile.objects.get(phone=data["phone"])
+                return profile
+            except:
+                pass
         elif "email" in data:
-            profile = models.Profile.objects.get(email=data["email"])
+            try:
+                profile = models.Profile.objects.get(email=data["email"])
+                return profile
+            except:
+                return None
         else:
-            profile = None
+            return None
 
-        return profile
 
     def save_cookie(self, data, cookie, url):
         if data:
@@ -121,7 +127,8 @@ class CompanyViewSet(viewsets.ModelViewSet):
 
             return JsonResponse(
                 {
-                    "id": profile.pk
+                    "id": profile.pk,
+                    "success": True
                 }
             )
         except KeyError:
@@ -175,13 +182,18 @@ class CompanyViewSet(viewsets.ModelViewSet):
             return JsonResponse({"error": "argument not found", "success": False})
         try:
             user = models.Company.objects.get(profile=profile_id)
-            profile = models.Profile.objects.get(id=profile_id)
+            profile = models.Profile.objects.get(pk=profile_id)
         except:
             return JsonResponse({"error": "not found", "success": False})
+        is_unique = UserViewSet().check_for_unique(data)
+        if is_unique:
+            return JsonResponse({"error": "phone field is unique", "success": False})
+
         profile.phone = phone
+        profile.save()
         user.step = 4
         user.save()
-        return JsonResponse({"id": profile_id})
+        return JsonResponse({"id": profile_id, "success": True})
 
     def step_five(self, data):
         try:

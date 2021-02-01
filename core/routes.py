@@ -2,7 +2,7 @@ from aiohttp import web
 from aiohttp.web_response import json_response
 from validate_email import validate_email
 
-from models import Profile, Patient
+from models import Profile, Company, Secure, Anonym, Manager
 from services.operations import General
 
 from aiohttp_cors import CorsViewMixin
@@ -12,67 +12,50 @@ routes = web.RouteTableDef()
 
 
 class BaseProfileLogic:
-    def get_data(self, user, profile):
-        return json_response(
-            {
-                "data": {
-                    "id": profile.id,
-                    "token": profile.token,
-                    "is_active": profile.is_active,
-                    "secure": user.secure,
-                    "phone": user.phone,
-                    "email": user.email,
-                    "first_name": user.first_name,
-                    "last_name": user.first_name,
-                    "cover_name": user.first_name,
-                    "language": user.language,
-                    "country": user.country,
-                    "city": user.city
-                }
-            }
-        )
-
-    def get_user_and_profile(self, auth):
-        if validate_email(auth):
-            user = Patient.query.where(Patient.email == auth).gino.first()
-        else:
-            user = Patient.query.where(Patient.phone == auth).gino.first()
-
-        if not user:
-            return json_response(
-                {
-                    "error": "user not found"
-                }
-            )
-
-        profile = Profile.get(Patient.profile_id)
-
+    def get_data(self, profile):
         return {
-            "user": user,
-            "profile": profile
+            "id": profile.id,
+            "token": profile.token,
+            "is_active": profile.is_active,
+            "phone": profile.phone,
+            "sms_code": profile.sms_code,
+            "email": profile.email,
+            "language": profile.language,
+            "country": profile.country,
+            "city": profile.city
         }
 
 
-@routes.view("/profile/")
-class ProfileViewSet(web.View, CorsViewMixin):
+@routes.view("/auth/company/")
+class CompanyViewSet(web.View, CorsViewMixin):
+
+    def make_response(self, data, company):
+        return {
+            **data,
+            "type_c": company.type_c,
+            "name": company.name,
+            "representatives_phones": company.representatives_phones,
+            "representatives_emails": company.representatives_emails,
+            "step": company.step
+        }
+
     async def post(self):
-        data = await self.request.json()  # TODO is_active
+        data = await self.request.json()
         try:
-            auth = data["auth"]
+            email = data["email"]
             password = General().crypt(data["password"])
-        except KeyError:
+            profile = await Profile.query.where(Profile.email == email).gino.first()
+            company = await Company.query.where(Company.profile == profile.id).gino.first()
+        except:
             return json_response(
                 {
-                    "error": "parameter not found"
+                    "error": "not found"
                 }
             )
 
-        user_data = BaseProfileLogic().get_user_and_profile(auth)
-        profile = await user_data["profile"]
-        user = await user_data["user"]
-
-        if profile.password == password:
-            return BaseProfileLogic().get_data(user, profile)
+        if profile.password == password and profile.is_active:
+            data = BaseProfileLogic().get_data(profile)
+            return json_response(self.make_response(data, company))
         else:
             return json_response(
                 {
@@ -80,33 +63,3 @@ class ProfileViewSet(web.View, CorsViewMixin):
                 }
             )
 
-
-@routes.view("/check_sms/")
-class ProfileViewSet(web.View, CorsViewMixin):
-    async def post(self):
-        data = await self.request.json()
-        try:
-            auth = data["auth"]
-            code = data["code"]
-        except KeyError:
-            return json_response(
-                {
-                    "error": "parameter not found"
-                }
-            )
-
-        user_data = BaseProfileLogic().get_user_and_profile(auth)
-        profile = user_data["profile"]
-        user = user_data["user"]
-
-        if user.sms_code == code:
-            profile.is_active = True
-            await profile.update(is_active=True).apply()
-
-            return BaseProfileLogic().get_data(user, profile)
-        else:
-            return json_response(
-                {
-                    "error": "code is wrong"
-                }
-            )

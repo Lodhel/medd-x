@@ -2,7 +2,7 @@ import asyncio
 
 from gino import Gino
 
-from .local_settings import DATABASE
+from local_settings import DATABASE
 
 
 db = Gino()
