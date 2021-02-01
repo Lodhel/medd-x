@@ -40,11 +40,11 @@ class Profile(models.Model):
 class Company(models.Model):
     profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
     COMPANY_TYPES = (
-        ('1', 'Clinic'),
-        ('2', 'Insurance company'),
-        ('3', 'Medtravel company'),
-        ('4', 'Pharmaceutical company'),
-        ('5', 'Charity foundation')
+        ('Clinic', 'Clinic'),
+        ('Insurance company', 'Insurance company'),
+        ('Medtravel company', 'Medtravel company'),
+        ('Pharmaceutical company', 'Pharmaceutical company'),
+        ('Charity foundation', 'Charity foundation')
     )
     type_c = models.CharField(max_length=64, choices=COMPANY_TYPES, default="Clinic")
     name = models.CharField(max_length=64, null=True)

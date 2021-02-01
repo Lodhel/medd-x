@@ -31,12 +31,15 @@ class CompanyViewSet(web.View, CorsViewMixin):
 
     def make_response(self, data, company):
         return {
-            **data,
-            "type_c": company.type_c,
-            "name": company.name,
-            "representatives_phones": company.representatives_phones,
-            "representatives_emails": company.representatives_emails,
-            "step": company.step
+            "data": {
+                **data,
+                "type_c": company.type_c,
+                "name": company.name,
+                "representatives_phones": company.representatives_phones,
+                "representatives_emails": company.representatives_emails,
+                "step": company.step
+            },
+            "success": True
         }
 
     async def post(self):
@@ -45,8 +48,8 @@ class CompanyViewSet(web.View, CorsViewMixin):
             email = data["email"]
             password = General().crypt(data["password"])
             profile = await Profile.query.where(Profile.email == email).gino.first()
-            company = await Company.query.where(Company.profile == profile.id).gino.first()
-        except:
+            company = await Company.query.where(Company.profile_id == profile.id).gino.first()
+        except ZeroDivisionError:
             return json_response(
                 {
                     "error": "not found"

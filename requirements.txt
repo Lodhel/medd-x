@@ -1,5 +1,7 @@
 aiohttp==3.7.3
-celery==5.0.5
+aiohttp-cors==0.7.0
 Django==3.1.5
 djangorestframework==3.12.2
+gino==1.0.1
 requests==2.25.1
+validate-email==1.3
