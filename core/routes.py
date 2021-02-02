@@ -1,14 +1,28 @@
+import datetime
+
 from aiohttp import web
 from aiohttp.web_response import json_response
 from validate_email import validate_email
 
-from models import Profile, Company, Secure, Anonym, Manager
+from models import Profile, Company, Secure, Anonym, Manager, Cookie
 from services.operations import General
 
 from aiohttp_cors import CorsViewMixin
 
 
 routes = web.RouteTableDef()
+
+
+class BaseView:
+    async def save_cookie(self, title, data, src):
+
+        cookie = Cookie(
+            title=title,
+            date_check=datetime.date.today(),
+            data=data,
+            src=src
+        )
+        await cookie.create()
 
 
 class BaseProfileLogic:
@@ -44,6 +58,9 @@ class CompanyViewSet(web.View, CorsViewMixin):
 
     async def post(self):
         data = await self.request.json()
+        await BaseView().save_cookie(self.request.headers["User-Agent"],
+                                     ["{}: {},\r\n".format(key, value) for key, value in data.items() if key != "password"],
+                                     self.request.url.raw_path_qs)
         try:
             email = data["email"]
             password = General().crypt(data["password"])

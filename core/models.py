@@ -1,6 +1,7 @@
 import asyncio
 
 from gino import Gino
+from gino.dialects import asyncpg
 
 from local_settings import DATABASE
 
@@ -65,6 +66,16 @@ class Manager(db.Model):
     middle_name = db.Column()
     last_name = db.Column()
     step = db.Column()
+
+
+class Cookie(db.Model):
+    __tablename__ = "cookie"
+
+    id = db.Column(db.Integer(), primary_key=True)
+    title = db.Column()
+    date_check = db.Column()
+    data = db.Column()
+    src = db.Column()
 
 
 async def connect():
