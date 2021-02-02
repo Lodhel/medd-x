@@ -1,10 +1,9 @@
-import time
-
 import aiohttp_cors
 from aiohttp import web
 
 import asyncio
 
+from models import BaseLogic
 from routes import routes
 
 
@@ -30,5 +29,8 @@ class Main:
 
     async def task_check_email(self):
         while True:
-            await print(1)
-            time.sleep(10)
+            emails = await BaseLogic().get_emails()
+            if emails:
+                for email in emails:
+                    print(email)  # TODO send to token
+            await asyncio.sleep(10)

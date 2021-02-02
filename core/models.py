@@ -1,4 +1,6 @@
 import asyncio
+import datetime
+import re
 
 from gino import Gino
 from gino.dialects import asyncpg
@@ -23,6 +25,22 @@ class Profile(db.Model):
     language = db.Column()
     country = db.Column()
     city = db.Column()
+
+
+class BaseLogic:
+
+    def make_date_string(self, string):
+        string = str(string)
+        string = "".join(map(str, re.findall(r'\d', string)))
+        return string[0:8]
+
+    async def get_emails(self):
+        users = await Profile.query.where(Profile.is_active == False).gino.all()
+        if users:
+            users = [user for user in users if int(self.make_date_string(user.date_joined+datetime.timedelta(14))) <= int(self.make_date_string(datetime.date.today()))]
+            return [user.email for user in users]
+        else:
+            return None
 
 
 class Company(db.Model):
