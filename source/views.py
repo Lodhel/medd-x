@@ -434,7 +434,7 @@ class SecureViewSet(viewsets.ModelViewSet):
                 }
             )
             if not profile:
-                return JsonResponse({"error": "email field is unique", "success": False})
+                return JsonResponse({"error": "phone field is unique", "success": False})
 
             user = UserViewSet().create_user(profile, models.Secure)
             # services.Twillio().send(phone, sms_code)
@@ -608,9 +608,9 @@ class ManagerViewSet(viewsets.ModelViewSet):
                 }
             )
             if not profile:
-                return JsonResponse({"error": "email field is unique", "success": False})
+                return JsonResponse({"error": "phone field is unique", "success": False})
 
-            user = UserViewSet().create_user(profile, models.Secure)
+            user = UserViewSet().create_user(profile, models.Manager)
             # services.Twillio().send(phone, sms_code)
             if not user:
                 return JsonResponse({"error": "create error", "success": False})

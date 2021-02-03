@@ -9,7 +9,7 @@ class Profile(models.Model):
     token = models.CharField(max_length=255, null=True)
     password = models.CharField(max_length=255, null=True)
     is_active = models.BooleanField(default=False)
-    date_joined = models.DateTimeField(default=datetime.date.today().strftime('%Y-%m-%d %H:%M'))
+    date_joined = models.DateTimeField(default=datetime.datetime.today().strftime('%Y-%m-%d %H:%M'))
     email = models.EmailField(max_length=32, null=True)
     phone = models.CharField(max_length=16, null=True)
     sms_code = models.CharField(max_length=4, null=True)
@@ -107,7 +107,7 @@ class Manager(models.Model):
 
 class Cookie(models.Model):
     title = models.CharField(max_length=255)
-    date_check = models.DateTimeField(default=datetime.date.today().strftime('%Y-%m-%d %H:%M'))
+    date_check = models.DateTimeField(default=datetime.datetime.today().strftime('%Y-%m-%d %H:%M'))
     data = ArrayField(
         models.TextField(),
         null=True
