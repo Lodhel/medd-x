@@ -1,0 +1,26 @@
+HTTP POST -> /api/company/
+
+step first:
+
+        body: {
+                "email": "your@mail.com",
+                "password": "password",
+                "step": 1
+              }
+
+        answer: {
+                    "id": "1",
+                    "success": true
+                }
+
+step second:
+
+        body: {
+                "profile_id": 1,
+                "step": 2
+              }
+
+        answer: {
+                    "id": "1",
+                    "success": true
+                }

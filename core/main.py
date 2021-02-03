@@ -27,6 +27,11 @@ class Main:
 
         web.run_app(app)
 
+    async def task_is_active(self):
+        while True:
+            await BaseLogic().check_is_active()
+            await asyncio.sleep(10)
+
     async def task_check_email(self):
         while True:
             emails = await BaseLogic().get_emails()

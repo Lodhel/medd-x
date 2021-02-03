@@ -9,6 +9,8 @@ class Profile(models.Model):
     token = models.CharField(max_length=255, null=True)
     password = models.CharField(max_length=255, null=True)
     is_active = models.BooleanField(default=False)
+    is_step = models.BooleanField(default=False)
+    is_send = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=datetime.datetime.today().strftime('%Y-%m-%d %H:%M'))
     email = models.EmailField(max_length=32, null=True)
     phone = models.CharField(max_length=16, null=True)

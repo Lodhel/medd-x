@@ -16,6 +16,8 @@ class Profile(db.Model):
 
     id = db.Column(db.Integer(), primary_key=True)
     is_active = db.Column()
+    is_step = db.Column()
+    is_send = db.Column()
     date_joined = db.Column()
     token = db.Column()
     password = db.Column()
@@ -34,11 +36,19 @@ class BaseLogic:
         string = "".join(map(str, re.findall(r'\d', string)))
         return string[0:8]
 
+    async def check_is_active(self):
+        users = await Profile.query.where(Profile.is_active == False).gino.all()
+        if users:
+            return [user.delete() for user in users if int(self.make_date_string(user.date_joined+datetime.timedelta(14))) <= int(self.make_date_string(datetime.date.today()))]
+
     async def get_emails(self):
         users = await Profile.query.where(Profile.is_active == False).gino.all()
         if users:
-            users = [user for user in users if int(self.make_date_string(user.date_joined+datetime.timedelta(14))) <= int(self.make_date_string(datetime.date.today()))]
-            return [user.email for user in users if user.email]
+            users = [user for user in users if not user.is_send and int(self.make_date_string(user.date_joined+datetime.timedelta(3))) <= int(self.make_date_string(datetime.date.today()))]
+            result = [user.email for user in users if user.email]
+            users = [user.update(is_send=True).apply() for user in users]
+
+            return result
         else:
             return None
 
@@ -46,9 +56,12 @@ class BaseLogic:
         users = await Profile.query.where(Profile.is_active == False).gino.all()
         if users:
             users = [user for user in users if
-                     int(self.make_date_string(user.date_joined + datetime.timedelta(14))) <= int(
+                     int(self.make_date_string(user.date_joined + datetime.timedelta(3))) <= int(
                          self.make_date_string(datetime.date.today()))]
-            return [user.phone for user in users if user.phone]
+            result = [user.phone for user in users if user.phone]
+            users = [user.update(is_send=True).apply() for user in users]
+
+            return result
         else:
             return None
 
