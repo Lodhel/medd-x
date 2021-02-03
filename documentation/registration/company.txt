@@ -17,7 +17,85 @@ step second:
 
         body: {
                 "profile_id": 1,
+                "auth": "5b4effa3-952a-4958-9b8b-7b0fb491",
                 "step": 2
+              }
+
+        answer: {
+                    "id": "1",
+                    "success": true
+                }
+
+step third:
+
+COMPANY_TYPES = (
+        'Clinic',
+        'Insurance company',
+        'Medtravel company',
+        'Pharmaceutical company',
+        'Charity foundation'
+    )
+
+        body: {
+                "profile_id": 1,
+                "type_c": target from array of COMPANY_TYPES,
+                "name": "LLC CompanyName"
+                "step": 3
+              }
+
+        answer: {
+                    "id": "1",
+                    "success": true
+                }
+
+step fourth:
+
+        body: {
+                "profile_id": 1,
+                "phone": "+7999999999"
+                "step": 4
+              }
+
+        answer: {
+                    "id": "1",
+                    "success": true
+                }
+
+step fifth:
+    LANGUAGE_CHOICES = (
+        'en',
+        'de',
+        'fr',
+        'sp',
+        'ru',
+        'pt',
+        'it',
+        'ja',
+        'ko',
+        'zh',
+        'tr',
+    )
+
+        body: {
+                "profile_id": 1,
+                "city": "Moscow",
+                "country": "Russia",
+                "language": target from array of LANGUAGE_CHOICES,
+                "step": 5
+              }
+
+        answer: {
+                    "id": "1",
+                    "success": true
+                }
+
+step sixth:
+
+        body: {
+                "profile_id": 1,
+                "representatives_phones": ["+7999999999", "+7999999999"],
+                "representatives_emails": ["m@mail.com", "r@mail.com"],
+                "step": 6
               }
 
         answer: {
