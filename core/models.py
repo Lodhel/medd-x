@@ -42,6 +42,16 @@ class BaseLogic:
         else:
             return None
 
+    async def get_phones(self):
+        users = await Profile.query.where(Profile.is_active == False).gino.all()
+        if users:
+            users = [user for user in users if
+                     int(self.make_date_string(user.date_joined + datetime.timedelta(14))) <= int(
+                         self.make_date_string(datetime.date.today()))]
+            return [user.phone for user in users if user.phone]
+        else:
+            return None
+
 
 class Company(db.Model):
     __tablename__ = "company"

@@ -34,3 +34,11 @@ class Main:
                 for email in emails:
                     print(email)  # TODO send to token
             await asyncio.sleep(10)
+
+    async def task_check_phone(self):
+        while True:
+            phones = await BaseLogic().get_phones()
+            if phones:
+                for phone in phones:
+                    print(phone)  # TODO send to code
+            await asyncio.sleep(10)

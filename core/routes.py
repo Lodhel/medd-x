@@ -26,6 +26,7 @@ class BaseView:
 
 
 class BaseProfileLogic:
+
     def get_data(self, profile):
         return {
             "id": profile.id,
@@ -75,6 +76,7 @@ class CompanyViewSet(web.View, CorsViewMixin):
             )
 
         if profile.password == password and profile.is_active:
+            await profile.update(token=General().generate_token()).apply()
             data = BaseProfileLogic().get_data(profile)
             return json_response(self.make_response(data, company))
         else:
@@ -118,6 +120,7 @@ class SecureViewSet(web.View, CorsViewMixin):
             )
 
         if profile.password == password and profile.is_active:
+            await profile.update(token=General().generate_token()).apply()
             data = BaseProfileLogic().get_data(profile)
             return json_response(self.make_response(data, secure))
         else:
@@ -166,6 +169,7 @@ class SecureViewSet(web.View, CorsViewMixin):
             )
 
         if profile.password == password and profile.is_active:
+            await profile.update(token=General().generate_token()).apply()
             data = BaseProfileLogic().get_data(profile)
             return json_response(self.make_response(data, secure))
         else:
@@ -214,6 +218,7 @@ class SecureViewSet(web.View, CorsViewMixin):
             )
 
         if profile.password == password and profile.is_active:
+            await profile.update(token=General().generate_token()).apply()
             data = BaseProfileLogic().get_data(profile)
             return json_response(self.make_response(data, secure))
         else:
