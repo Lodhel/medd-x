@@ -30,7 +30,7 @@ class Main:
     async def task_is_active(self):
         while True:
             await BaseLogic().check_is_active()
-            await asyncio.sleep(10)
+            await asyncio.sleep(86400)
 
     async def task_is_step(self):
         while True:
@@ -42,7 +42,7 @@ class Main:
                 if data["phones"]:
                     for phone in data["phones"]:
                         print(phone)  # TODO send info
-            await asyncio.sleep(10)
+            await asyncio.sleep(86400)
 
     async def task_check_email(self):
         while True:
@@ -50,7 +50,7 @@ class Main:
             if emails:
                 for email in emails:
                     print(email)  # TODO send to token
-            await asyncio.sleep(10)
+            await asyncio.sleep(86400)
 
     async def task_check_phone(self):
         while True:
@@ -58,4 +58,4 @@ class Main:
             if phones:
                 for phone in phones:
                     print(phone)  # TODO send to code
-            await asyncio.sleep(10)
+            await asyncio.sleep(86400)
