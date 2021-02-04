@@ -1,0 +1,5 @@
+HTTP POST -> http://188.225.58.31:8000/api/{role}/
+
+HEADERS {
+            "AUTHORIZATION": "5b4effa3-952a-4958-9b8b-7b0fb491"
+        }

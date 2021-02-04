@@ -1,4 +1,4 @@
-HTTP POST -> http://188.225.58.31:8000/api/company/
+HTTP POST -> http://188.225.58.31:8000/api/anonym/
 
 step first:
 
@@ -28,18 +28,9 @@ step second:
 
 step third:
 
-COMPANY_TYPES = (
-        'Clinic',
-        'Insurance company',
-        'Medtravel company',
-        'Pharmaceutical company',
-        'Charity foundation'
-    )
-
         body: {
                 "profile_id": 1,
-                "type_c": target from array of COMPANY_TYPES,
-                "name": "LLC CompanyName"
+                "cover_name": "name"
                 "step": 3
               }
 
@@ -49,19 +40,6 @@ COMPANY_TYPES = (
                 }
 
 step fourth:
-
-        body: {
-                "profile_id": 1,
-                "phone": "+7999999999"
-                "step": 4
-              }
-
-        answer: {
-                    "id": "1",
-                    "success": true
-                }
-
-step fifth:
     LANGUAGE_CHOICES = (
         'en',
         'de',
@@ -81,7 +59,7 @@ step fifth:
                 "city": "Moscow",
                 "country": "Russia",
                 "language": target from array of LANGUAGE_CHOICES,
-                "step": 5
+                "step": 4
               }
 
         answer: {
@@ -89,16 +67,3 @@ step fifth:
                     "success": true
                 }
 
-step sixth:
-
-        body: {
-                "profile_id": 1,
-                "representatives_phones": ["+7999999999", "+7999999999"],
-                "representatives_emails": ["m@mail.com", "r@mail.com"],
-                "step": 6
-              }
-
-        answer: {
-                    "id": "1",
-                    "success": true
-                }

@@ -7,7 +7,7 @@ from twilio.rest import Client
 
 class Twillio:
 
-    def send(self, phone, sms_code):
+    def send_sms(self, phone, sms_code):
         """
                 TEST ACCOUNT SID
         AC680515c14f185ac882b8006c81dce7a0
@@ -27,6 +27,28 @@ class Twillio:
                          )
 
         print(message.sid)
+
+    def send_mail(self, email=None, text=None):
+        # Download the helper library from https://www.twilio.com/docs/python/install
+        """
+            https://www.twilio.com/docs/verify/email
+            MEDD_dev
+            API Key ID: 6RFOZOTqQwyhomWRUUt8aA
+            API Key: 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
+        """
+
+        # Your Account Sid and Auth Token from twilio.com/console
+        # and set the environment variables. See http://twil.io/secure
+        account_sid = "AC680515c14f185ac882b8006c81dce7a0"
+        auth_token = "f96557e8d790c80e76507628dd3de33c"
+        client = Client(account_sid, auth_token)
+
+        verification = client.verify \
+            .services('2qJnuyR0980hqmdzkLUnnjcf-DAv1mcRtHwfegFtedg') \
+            .verifications \
+            .create(to='recipient@foo.com', channel='email')
+
+        print(verification.sid)
 
 
 class General:

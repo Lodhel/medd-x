@@ -61,7 +61,7 @@ class CompanyViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.CompanySerializer
     queryset = models.Company.objects.all()
 
-    def retrieve(self, request, *args, **kwargs):
+    def list(self, request, *args, **kwargs):
         try:
             UserViewSet().save_cookie(self.request.data, self.request._request.META["HTTP_USER_AGENT"], self.request._request.META["PATH_INFO"])
         except:
@@ -243,7 +243,7 @@ class AnonymViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.AnonymSerializer
     queryset = models.Anonym.objects.all()
 
-    def retrieve(self, request, *args, **kwargs):
+    def list(self, request, *args, **kwargs):
         try:
             UserViewSet().save_cookie(self.request.data, self.request._request.META["HTTP_USER_AGENT"], self.request._request.META["PATH_INFO"])
         except:
@@ -377,7 +377,7 @@ class SecureViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.SecureSerializer
     queryset = models.Secure.objects.all()
 
-    def retrieve(self, request, *args, **kwargs):
+    def list(self, request, *args, **kwargs):
         try:
             UserViewSet().save_cookie(self.request.data, self.request._request.META["HTTP_USER_AGENT"], self.request._request.META["PATH_INFO"])
         except:
@@ -428,7 +428,6 @@ class SecureViewSet(viewsets.ModelViewSet):
             sms_code = services.General().generate_code()
             profile = UserViewSet().create_profile(
                 {
-                    "password": services.General().crypt(data["password"]),
                     "sms_code": sms_code,
                     "phone": data["phone"]
                 }
@@ -553,7 +552,7 @@ class ManagerViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.ManagerSerializer
     queryset = models.Manager.objects.all()
 
-    def retrieve(self, request, *args, **kwargs):
+    def list(self, request, *args, **kwargs):
         try:
             UserViewSet().save_cookie(self.request.data, self.request._request.META["HTTP_USER_AGENT"], self.request._request.META["PATH_INFO"])
         except:
@@ -602,7 +601,6 @@ class ManagerViewSet(viewsets.ModelViewSet):
             sms_code = services.General().generate_code()
             profile = UserViewSet().create_profile(
                 {
-                    "password": services.General().crypt(data["password"]),
                     "sms_code": sms_code,
                     "phone": data["phone"]
                 }

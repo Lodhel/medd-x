@@ -1,10 +1,9 @@
-HTTP POST -> http://188.225.58.31:8000/api/company/
+HTTP POST -> http://188.225.58.31:8000/api/secure/
 
 step first:
 
         body: {
-                "email": "your@mail.com",
-                "password": "password",
+                "phone": "+7999999999",
                 "step": 1
               }
 
@@ -17,7 +16,7 @@ step second:
 
         body: {
                 "profile_id": 1,
-                "auth": "5b4effa3-952a-4958-9b8b-7b0fb491",
+                "auth": "1234",
                 "step": 2
               }
 
@@ -27,19 +26,9 @@ step second:
                 }
 
 step third:
-
-COMPANY_TYPES = (
-        'Clinic',
-        'Insurance company',
-        'Medtravel company',
-        'Pharmaceutical company',
-        'Charity foundation'
-    )
-
         body: {
                 "profile_id": 1,
-                "type_c": target from array of COMPANY_TYPES,
-                "name": "LLC CompanyName"
+                "password": "password",
                 "step": 3
               }
 
@@ -52,7 +41,8 @@ step fourth:
 
         body: {
                 "profile_id": 1,
-                "phone": "+7999999999"
+                "first_name": "Name",
+                "last_name": "Name",
                 "step": 4
               }
 
@@ -93,8 +83,7 @@ step sixth:
 
         body: {
                 "profile_id": 1,
-                "representatives_phones": ["+7999999999", "+7999999999"],
-                "representatives_emails": ["m@mail.com", "r@mail.com"],
+                "questionary": "+TEXT",
                 "step": 6
               }
 

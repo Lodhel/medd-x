@@ -52,6 +52,18 @@ class BaseLogic:
         else:
             return None
 
+    async def get_step(self):
+        users = await Profile.query.where(Profile.is_step == False).gino.all()
+        if users:
+            users = [user for user in users if not user.is_send and int(self.make_date_string(user.date_joined+datetime.timedelta(1))) <= int(self.make_date_string(datetime.date.today()))]
+            emails = [user.email for user in users if user.email]
+            phones = [user.phone for user in users if user.phone]
+            users = [user.update(is_send=True).apply() for user in users]
+
+            return {"emails": emails, "phones": phones}
+        else:
+            return None
+
     async def get_phones(self):
         users = await Profile.query.where(Profile.is_active == False).gino.all()
         if users:
