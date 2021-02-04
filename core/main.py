@@ -35,12 +35,13 @@ class Main:
     async def task_is_step(self):
         while True:
             data = await BaseLogic().get_step()
-            if data["emails"]:
-                for email in data["emails"]:
-                    print(email)  # TODO send info
-            if data["phones"]:
-                for phone in data["phones"]:
-                    print(phone)  # TODO send info
+            if data:
+                if data["emails"]:
+                    for email in data["emails"]:
+                        print(email)  # TODO send info
+                if data["phones"]:
+                    for phone in data["phones"]:
+                        print(phone)  # TODO send info
             await asyncio.sleep(10)
 
     async def task_check_email(self):
