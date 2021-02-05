@@ -89,7 +89,7 @@ class CompanyViewSet(web.View, CorsViewMixin):
 
 
 @routes.view("/api/auth/anonym/")
-class SecureViewSet(web.View, CorsViewMixin):
+class AnonymViewSet(web.View, CorsViewMixin):
 
     def make_response(self, data, anonym):
         return {
@@ -182,7 +182,7 @@ class SecureViewSet(web.View, CorsViewMixin):
 
 
 @routes.view("/api/auth/manager/")
-class SecureViewSet(web.View, CorsViewMixin):
+class ManagerViewSet(web.View, CorsViewMixin):
 
     def make_response(self, data, manager):
         return {

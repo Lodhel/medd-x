@@ -8,7 +8,7 @@ class CompanySerializer(serializers.ModelSerializer):
         model = models.Company
 
         fields = (
-            'id', 'language', 'country', 'city'
+            'id',
         )
 
 
@@ -17,7 +17,7 @@ class AnonymSerializer(serializers.ModelSerializer):
         model = models.Anonym
 
         fields = (
-            'id', 'language', 'country', 'city'
+            'id',
         )
 
 
@@ -26,7 +26,7 @@ class SecureSerializer(serializers.ModelSerializer):
         model = models.Anonym
 
         fields = (
-            'id', 'language', 'country', 'city'
+            'id',
         )
 
 
@@ -35,5 +35,5 @@ class ManagerSerializer(serializers.ModelSerializer):
         model = models.Manager
 
         fields = (
-            'id', 'language', 'country', 'city'
+            'id',
         )
