@@ -1,7 +1,7 @@
 from django.db import transaction
 from django.http import JsonResponse
 from rest_framework import viewsets
-from . import models, serializers, services
+from . import models, serializers, services, send_service
 
 
 class UserViewSet:
@@ -436,7 +436,7 @@ class SecureViewSet(viewsets.ModelViewSet):
                 return JsonResponse({"error": "phone field is unique", "success": False})
 
             user = UserViewSet().create_user(profile, models.Secure)
-            # services.Twillio().send(phone, sms_code)
+            send_service.Sendor().send_sms(phone=data["phone"], code=sms_code)
             if not user:
                 return JsonResponse({"error": "create error", "success": False})
 
@@ -609,7 +609,7 @@ class ManagerViewSet(viewsets.ModelViewSet):
                 return JsonResponse({"error": "phone field is unique", "success": False})
 
             user = UserViewSet().create_user(profile, models.Manager)
-            # services.Twillio().send(phone, sms_code)
+            send_service.Sendor().send_sms(phone=data["phone"], code=sms_code)
             if not user:
                 return JsonResponse({"error": "create error", "success": False})
 
