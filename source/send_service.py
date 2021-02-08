@@ -52,13 +52,13 @@ class Sendor:
         except ApiException as e:
             print("Exception when calling VoiceApi->voice_send_post: %s\n" % e)
 
-    def send_to_email(self):
+    def send_to_email(self, email, code):
         api_instance = clicksend_client.TransactionalEmailApi(clicksend_client.ApiClient(configuration))
-        email_receipient = EmailRecipient(email='lodhelnew@gmail.com',name='abc')
-        email_from = EmailFrom(email_address_id='14866',name='abc')
+        email_receipient = EmailRecipient(email='lodhelnew@gmail.com', name='username')
+        email_from = EmailFrom(email_address_id='14867', name='MEDD')
         attachment = Attachment(content='ZmlsZSBjb250ZW50cw==',
-                              type='text/plain',
-                              filename='text.txt',
+                              type='text/html',
+                              filename='example.html',
                               disposition='attachment',
                               content_id='1')
         # Email | Email model
@@ -67,9 +67,8 @@ class Sendor:
                                       bcc=[email_receipient],
                                       _from=email_from,
                                       subject="Test subject",
-                                      body="this is body",
-                                      attachments=[attachment],
-                                      schedule=14785562325)
+                                      body="<h1>this is body</h1>",
+                                      attachments=[attachment])
 
         try:
             # Send transactional email
@@ -77,3 +76,5 @@ class Sendor:
             print(api_response)
         except ApiException as e:
             print("Exception when calling TransactionalEmailApi->email_send_post: %s\n" % e)
+
+#Sendor().send_to_email()

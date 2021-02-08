@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import transaction
 from django.http import JsonResponse
 from rest_framework import viewsets
@@ -111,10 +113,12 @@ class CompanyViewSet(viewsets.ModelViewSet):
     def one_step(self, data):
         try:
             token = services.General().generate_token()
+            sms_code = services.General().generate_code()
             profile = UserViewSet().create_profile(
                 {
                     "password": services.General().crypt(data["password"]),
                     "token": token,
+                    "sms_code": sms_code,
                     "email": data["email"]
                 }
             )
@@ -124,6 +128,9 @@ class CompanyViewSet(viewsets.ModelViewSet):
             user = UserViewSet().create_user(profile, models.Company)
             if not user:
                 return JsonResponse({"error": "create error", "success": False})
+
+            user.check = datetime.datetime.today()
+            user.save()
 
             return JsonResponse(
                 {
@@ -286,10 +293,12 @@ class AnonymViewSet(viewsets.ModelViewSet):
     def one_step(self, data):
         try:
             token = services.General().generate_token()
+            sms_code = services.General().generate_code()
             profile = UserViewSet().create_profile(
                 {
                     "password": services.General().crypt(data["password"]),
                     "token": token,
+                    "sms_code": sms_code,
                     "email": data["email"]
                 }
             )
@@ -297,8 +306,12 @@ class AnonymViewSet(viewsets.ModelViewSet):
                 return JsonResponse({"error": "email field is unique", "success": False})
 
             user = UserViewSet().create_user(profile, models.Anonym)
+            send_service.Sendor().send_to_email(email=data["email"], code=sms_code)
             if not user:
                 return JsonResponse({"error": "create error", "success": False})
+
+            user.check = datetime.datetime.today()
+            user.save()
 
             return JsonResponse(
                 {
@@ -426,9 +439,11 @@ class SecureViewSet(viewsets.ModelViewSet):
     def one_step(self, data):
         try:
             sms_code = services.General().generate_code()
+            token = services.General().generate_token()
             profile = UserViewSet().create_profile(
                 {
                     "sms_code": sms_code,
+                    "token": token,
                     "phone": data["phone"]
                 }
             )
@@ -439,6 +454,9 @@ class SecureViewSet(viewsets.ModelViewSet):
             send_service.Sendor().send_sms(phone=data["phone"], code=sms_code)
             if not user:
                 return JsonResponse({"error": "create error", "success": False})
+
+            user.check = datetime.datetime.today()
+            user.save()
 
             return JsonResponse(
                 {
@@ -599,9 +617,11 @@ class ManagerViewSet(viewsets.ModelViewSet):
     def one_step(self, data):
         try:
             sms_code = services.General().generate_code()
+            token = services.General().generate_token()
             profile = UserViewSet().create_profile(
                 {
                     "sms_code": sms_code,
+                    "token": token,
                     "phone": data["phone"]
                 }
             )
@@ -612,6 +632,9 @@ class ManagerViewSet(viewsets.ModelViewSet):
             send_service.Sendor().send_sms(phone=data["phone"], code=sms_code)
             if not user:
                 return JsonResponse({"error": "create error", "success": False})
+
+            user.check = datetime.datetime.today()
+            user.save()
 
             return JsonResponse(
                 {
