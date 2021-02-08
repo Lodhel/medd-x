@@ -3,7 +3,6 @@ import datetime
 import re
 
 from gino import Gino
-from gino.dialects import asyncpg
 
 from local_settings import DATABASE
 
@@ -18,6 +17,9 @@ class Profile(db.Model):
     is_active = db.Column()
     is_step = db.Column()
     is_send = db.Column()
+    is_sms = db.Column()
+    is_email = db.Column()
+    check = db.Column()
     date_joined = db.Column()
     token = db.Column()
     password = db.Column()
@@ -35,6 +37,19 @@ class BaseLogic:
         string = str(string)
         string = "".join(map(str, re.findall(r'\d', string)))
         return string[0:8]
+
+    def make_time_string(self, string):
+        string = str(string)
+        string = "".join(map(str, re.findall(r'\d', string)))
+        return string[9:-1]
+
+    #  TODO is work
+
+    async def let_sms(self):
+        users = await Profile.query.where(Profile.is_sms == False).gino.all()
+        if users:
+            users = [user for user in users if int(self.make_time_string(user.check + datetime.timedelta(minutes=2))) <= int(
+                         self.make_time_string(datetime.datetime.today()))]
 
     async def check_is_active(self):
         users = await Profile.query.where(Profile.is_active == False).gino.all()
