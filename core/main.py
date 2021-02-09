@@ -44,6 +44,16 @@ class Main:
                         print(phone)  # TODO send info
             await asyncio.sleep(86400)
 
+    async def task_let_email(self):
+        while True:
+            await BaseLogic().let_email()
+            await asyncio.sleep(150)
+
+    async def task_let_sms(self):
+        while True:
+            await BaseLogic().let_sms()
+            await asyncio.sleep(60)
+
     async def task_check_email(self):
         while True:
             emails = await BaseLogic().get_emails()

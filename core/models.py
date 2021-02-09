@@ -41,15 +41,23 @@ class BaseLogic:
     def make_time_string(self, string):
         string = str(string)
         string = "".join(map(str, re.findall(r'\d', string)))
-        return string[9:-1]
+        return string[8:12]
 
-    #  TODO is work
+    async def let_email(self):
+        users = await Profile.query.where(Profile.is_email == False).gino.all()
+        if users:
+            users = [user for user in users if int(self.make_time_string(user.check + datetime.timedelta(minutes=5))) <= int(
+                         self.make_time_string(datetime.datetime.today()))]
+            for user in users:
+                await user.update(is_email=True).apply()
 
     async def let_sms(self):
         users = await Profile.query.where(Profile.is_sms == False).gino.all()
         if users:
             users = [user for user in users if int(self.make_time_string(user.check + datetime.timedelta(minutes=2))) <= int(
                          self.make_time_string(datetime.datetime.today()))]
+            for user in users:
+                await user.update(is_sms=True).apply()
 
     async def check_is_active(self):
         users = await Profile.query.where(Profile.is_active == False).gino.all()

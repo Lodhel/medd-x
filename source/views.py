@@ -129,8 +129,9 @@ class CompanyViewSet(viewsets.ModelViewSet):
             if not user:
                 return JsonResponse({"error": "create error", "success": False})
 
-            user.check = datetime.datetime.today()
-            user.save()
+            profile.check = datetime.datetime.today()
+            profile.is_email = False
+            profile.save()
 
             return JsonResponse(
                 {
@@ -310,8 +311,9 @@ class AnonymViewSet(viewsets.ModelViewSet):
             if not user:
                 return JsonResponse({"error": "create error", "success": False})
 
-            user.check = datetime.datetime.today()
-            user.save()
+            profile.check = datetime.datetime.today()
+            profile.is_email = False
+            profile.save()
 
             return JsonResponse(
                 {
@@ -455,8 +457,9 @@ class SecureViewSet(viewsets.ModelViewSet):
             if not user:
                 return JsonResponse({"error": "create error", "success": False})
 
-            user.check = datetime.datetime.today()
-            user.save()
+            profile.check = datetime.datetime.today()
+            profile.is_sms = False
+            profile.save()
 
             return JsonResponse(
                 {
@@ -633,8 +636,9 @@ class ManagerViewSet(viewsets.ModelViewSet):
             if not user:
                 return JsonResponse({"error": "create error", "success": False})
 
-            user.check = datetime.datetime.today()
-            user.save()
+            profile.check = datetime.datetime.today()
+            profile.is_sms = False
+            profile.save()
 
             return JsonResponse(
                 {
