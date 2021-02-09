@@ -1,5 +1,9 @@
 
 from __future__ import print_function
+
+import os
+import re
+
 import clicksend_client
 from clicksend_client import SmsMessage, VoiceMessage
 from clicksend_client.rest import ApiException
@@ -58,16 +62,22 @@ class Sendor:
         email_from = EmailFrom(email_address_id='14867', name='MEDD')
         attachment = Attachment(content='ZmlsZSBjb250ZW50cw==',
                               type='text/html',
-                              filename='example.html',
+                              filename='text.txt',
                               disposition='attachment',
-                              content_id='1')
+                              content_id='292')
         # Email | Email model
+
+        base_dir_template: str = "{}/templates/email_verify.html".format(os.path.dirname(os.path.abspath(__file__)))
+        template = open(base_dir_template, "r", encoding='utf-8')
+        template: str = template.read()
+
+
         email = clicksend_client.Email(to=[email_receipient],
                                       cc=[email_receipient],
                                       bcc=[email_receipient],
                                       _from=email_from,
                                       subject="Test subject",
-                                      body="<h1>this is body</h1>",
+                                      body=template,
                                       attachments=[attachment])
 
         try:
