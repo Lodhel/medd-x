@@ -58,7 +58,7 @@ class Sendor:
 
     def send_to_email(self, email, code):
         api_instance = clicksend_client.TransactionalEmailApi(clicksend_client.ApiClient(configuration))
-        email_receipient = EmailRecipient(email='lodhelnew@gmail.com', name='username')
+        email_receipient = EmailRecipient(email=email, name='username')
         email_from = EmailFrom(email_address_id='14867', name='MEDD')
         attachment = Attachment(content='ZmlsZSBjb250ZW50cw==',
                               type='text/html',
@@ -67,9 +67,14 @@ class Sendor:
                               content_id='292')
         # Email | Email model
 
-        base_dir_template: str = "{}/templates/email_verify.html".format(os.path.dirname(os.path.abspath(__file__)))
-        template = open(base_dir_template, "r", encoding='utf-8')
-        template: str = template.read()
+        base_dir_template_start: str = "{}/templates/email_verify.html".format(os.path.dirname(os.path.abspath(__file__)))
+        base_dir_template_end: str = "{}/templates/email_verify2.html".format(os.path.dirname(os.path.abspath(__file__)))
+        template_start = open(base_dir_template_start, "r", encoding='utf-8')
+        template_end = open(base_dir_template_end, "r", encoding='utf-8')
+        template_start: str = template_start.read()
+        template_end: str = template_end.read()
+
+        template = template_start + code + template_end
 
 
         email = clicksend_client.Email(to=[email_receipient],
@@ -86,5 +91,3 @@ class Sendor:
             print(api_response)
         except ApiException as e:
             print("Exception when calling TransactionalEmailApi->email_send_post: %s\n" % e)
-
-#Sendor().send_to_email()
