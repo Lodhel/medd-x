@@ -37,3 +37,30 @@ class ManagerSerializer(serializers.ModelSerializer):
         fields = (
             'id',
         )
+
+
+class PhysicianSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Anonym
+
+        fields = (
+            'id',
+        )
+
+
+class AssistantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Anonym
+
+        fields = (
+            'id',
+        )
+
+
+class TranslatorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Manager
+
+        fields = (
+            'id',
+        )

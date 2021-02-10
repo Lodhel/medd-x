@@ -110,6 +110,48 @@ class Manager(models.Model):
         db_table = 'manager'
 
 
+class Physician(models.Model):
+    profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=64, null=True)
+    middle_name = models.CharField(max_length=64, null=True)
+    last_name = models.CharField(max_length=64, null=True)
+    step = models.IntegerField(default=0)
+
+    def __str__(self):
+        return str(self.profile)
+
+    class Meta:
+        db_table = 'physician'
+
+
+class Assistant(models.Model):
+    profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=64, null=True)
+    middle_name = models.CharField(max_length=64, null=True)
+    last_name = models.CharField(max_length=64, null=True)
+    step = models.IntegerField(default=0)
+
+    def __str__(self):
+        return str(self.profile)
+
+    class Meta:
+        db_table = 'assistant'
+
+
+class Translator(models.Model):
+    profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=64, null=True)
+    middle_name = models.CharField(max_length=64, null=True)
+    last_name = models.CharField(max_length=64, null=True)
+    step = models.IntegerField(default=0)
+
+    def __str__(self):
+        return str(self.profile)
+
+    class Meta:
+        db_table = 'translator'
+
+
 class Cookie(models.Model):
     title = models.CharField(max_length=255)
     date_check = models.DateTimeField(default=datetime.datetime.today().strftime('%Y-%m-%d %H:%M'))

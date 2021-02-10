@@ -26,6 +26,9 @@ router.register('company', views.CompanyViewSet)
 router.register('anonym', views.AnonymViewSet)
 router.register('secure', views.SecureViewSet)
 router.register('manager', views.ManagerViewSet)
+router.register('assistant', views.AssistantViewSet)
+router.register('translator', views.TranslatorViewSet)
+router.register('physician', views.PhysicianViewSet)
 
 
 urlpatterns = [
