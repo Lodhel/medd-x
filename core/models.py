@@ -144,6 +144,39 @@ class Manager(db.Model):
     step = db.Column()
 
 
+class Physician(db.Model):
+    __tablename__ = "physician"
+
+    id = db.Column(db.Integer(), primary_key=True)
+    profile_id = db.Column()
+    first_name = db.Column()
+    middle_name = db.Column()
+    last_name = db.Column()
+    step = db.Column()
+
+
+class Assistant(db.Model):
+    __tablename__ = "assistant"
+
+    id = db.Column(db.Integer(), primary_key=True)
+    profile_id = db.Column()
+    first_name = db.Column()
+    middle_name = db.Column()
+    last_name = db.Column()
+    step = db.Column()
+
+
+class Translator(db.Model):
+    __tablename__ = "translator"
+
+    id = db.Column(db.Integer(), primary_key=True)
+    profile_id = db.Column()
+    first_name = db.Column()
+    middle_name = db.Column()
+    last_name = db.Column()
+    step = db.Column()
+
+
 class Cookie(db.Model):
     __tablename__ = "cookie"
 
