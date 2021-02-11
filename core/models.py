@@ -187,6 +187,54 @@ class Cookie(db.Model):
     src = db.Column()
 
 
+class QuestionBlock(db.Model):
+    __tablename__ = "question_block"
+
+    id = db.Column(db.Integer(), primary_key=True)
+    title = db.Column()
+    description = db.Column()
+    question_list = db.Column()
+    question_group_list = db.Column()
+
+
+class QuestionGroup(db.Model):
+    __tablename__ = "question_group"
+
+    id = db.Column(db.Integer(), primary_key=True)
+    question_list = db.Column()
+
+
+class Question(db.Model):
+    __tablename__ = "question_group"
+
+    id = db.Column(db.Integer(), primary_key=True)
+    quest = db.Column()
+    answer = db.Column()
+
+
+class Chapter(db.Model):
+    __tablename__ = "chapter"
+
+    id = db.Column(db.Integer(), primary_key=True)
+    title = db.Column()
+    description = db.Column()
+    question_list = db.Column()
+    question_group_list = db.Column()
+    question_block_list = db.Column()
+
+
+class Questionnarie(db.Model):
+    __tablename__ = "questionnarie"
+
+    id = db.Column(db.Integer(), primary_key=True)
+    title = db.Column()
+    description = db.Column()
+    question_list = db.Column()
+    question_group_list = db.Column()
+    question_block_list = db.Column()
+    chapter_list = db.Column()
+
+
 async def connect():
     await db.set_bind('postgresql://{}:{}@{}/{}'.format(
         DATABASE["USERNAME"], DATABASE["PASSWORD"], DATABASE["HOST"], DATABASE["NAME"]

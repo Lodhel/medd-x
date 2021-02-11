@@ -167,3 +167,65 @@ class Cookie(models.Model):
     class Meta:
         db_table = 'cookie'
 
+
+class QuestionBlock(models.Model):
+    title = models.CharField(max_length=128)
+    description = models.TextField()
+    question_list = ArrayField(models.IntegerField(), null=True)
+    question_group_list = ArrayField(models.IntegerField(), null=True)
+
+    def __str__(self):
+        return str(self.pk)
+
+    class Meta:
+        db_table = 'question_block'
+
+
+class QuestionGroup(models.Model):
+    question_list = ArrayField(models.IntegerField())
+
+    def __str__(self):
+        return str(self.pk)
+
+    class Meta:
+        db_table = 'question_group'
+
+
+class Question(models.Model):
+    quest = models.TextField()
+    answer = models.TextField()
+
+    def __str__(self):
+        return str(self.pk)
+
+    class Meta:
+        db_table = 'question'
+
+
+class Chapter(models.Model):
+    title = models.CharField(max_length=128)
+    description = models.TextField()
+    question_list = ArrayField(models.IntegerField(), null=True)
+    question_group_list = ArrayField(models.IntegerField(), null=True)
+    question_block_list = ArrayField(models.IntegerField(), null=True)
+
+    def __str__(self):
+        return str(self.pk)
+
+    class Meta:
+        db_table = 'chapter'
+
+
+class Questionnarie(models.Model):
+    title = models.CharField(max_length=128)
+    description = models.TextField()
+    question_list = ArrayField(models.IntegerField(), null=True)
+    question_group_list = ArrayField(models.IntegerField(), null=True)
+    question_block_list = ArrayField(models.IntegerField(), null=True)
+    chapter_list = ArrayField(models.IntegerField(), null=True)
+
+    def __str__(self):
+        return str(self.pk)
+
+    class Meta:
+        db_table = 'questionnarie'
