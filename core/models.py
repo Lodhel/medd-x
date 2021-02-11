@@ -205,7 +205,14 @@ class QuestionGroup(db.Model):
 
 
 class Question(db.Model):
-    __tablename__ = "question_group"
+    __tablename__ = "question"
+
+    id = db.Column(db.Integer(), primary_key=True)
+    quest = db.Column()
+
+
+class Answer(db.Model):
+    __tablename__ = "answer"
 
     id = db.Column(db.Integer(), primary_key=True)
     quest = db.Column()

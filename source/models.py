@@ -193,13 +193,23 @@ class QuestionGroup(models.Model):
 
 class Question(models.Model):
     quest = models.TextField()
-    answer = models.TextField()
 
     def __str__(self):
         return str(self.pk)
 
     class Meta:
         db_table = 'question'
+
+
+class Answer(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    answer = models.TextField()
+
+    def __str__(self):
+        return str(self.pk)
+
+    class Meta:
+        db_table = 'answer'
 
 
 class Chapter(models.Model):

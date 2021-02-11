@@ -14,6 +14,8 @@ from models import Assistant
 from models import Translator
 from models import Cookie
 
+from questionnarie_views import QuestionView
+
 from services.operations import General
 
 from aiohttp_cors import CorsViewMixin
@@ -384,3 +386,16 @@ class TranslatorViewSet(web.View, CorsViewMixin):
                     "success": False
                 }
             )
+
+
+@routes.view("/api/question")
+class QuestionViewSet(web.View, CorsViewMixin):
+
+    async def post(self):
+        data = await self.request.json()
+        instance = QuestionView().post(data)
+
+        return json_response({
+            "data": instance,
+            "success": True
+        })
