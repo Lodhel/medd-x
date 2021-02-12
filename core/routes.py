@@ -388,6 +388,18 @@ class TranslatorViewSet(web.View, CorsViewMixin):
             )
 
 
+@routes.view("/api/profile/info/")
+class ProfileInfo(web.View, CorsViewMixin):
+
+    async def get(self):
+        params = self.request.rel_url.query
+        data = await self.request.json()
+
+        return json_response({
+            "success": True,  # TODO create mirror
+        })
+
+
 @routes.view("/api/question")
 class QuestionViewSet(web.View, CorsViewMixin):
 

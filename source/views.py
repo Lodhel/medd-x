@@ -230,14 +230,19 @@ class CompanyViewSet(viewsets.ModelViewSet):
         except KeyError:
             return JsonResponse({"error": "argument not found", "success": False})
         try:
+            profile = models.Profile.objects.get(pk=profile_id)
             user = models.Company.objects.get(profile=profile_id)
         except:
             return JsonResponse({"error": "not found", "success": False})
 
-        user.representatives_phones = representatives_phones
-        user.representatives_emails = representatives_emails
+        # TODO created users
+
+        user.representatives_phones = representatives_phones  # TODO send invite to phones
+        user.representatives_emails = representatives_emails  # TODO send invite to emails
         user.step = 6
         user.save()
+        profile.is_step = True
+        profile.save()
         return JsonResponse({"id": profile_id, "success": True})
 
     @transaction.atomic()
@@ -371,6 +376,7 @@ class AnonymViewSet(viewsets.ModelViewSet):
         except KeyError:
             return JsonResponse({"error": "argument not found", "success": False})
         try:
+            profile = models.Profile.objects.get(pk=profile_id)
             user = models.Anonym.objects.get(profile=profile_id)
         except:
             return JsonResponse({"error": "not found", "success": False})
@@ -379,6 +385,8 @@ class AnonymViewSet(viewsets.ModelViewSet):
         user.city = city
         user.step = 5
         user.save()
+        profile.is_step = True
+        profile.save()
         return JsonResponse({"id": profile_id, "success": True})
 
     @transaction.atomic()
@@ -553,6 +561,7 @@ class SecureViewSet(viewsets.ModelViewSet):
         except KeyError:
             return JsonResponse({"error": "argument not found", "success": False})
         try:
+            profile = models.Profile.objects.get(pk=profile_id)
             user = models.Company.objects.get(profile=profile_id)
         except:
             return JsonResponse({"error": "not found", "success": False})
@@ -560,6 +569,8 @@ class SecureViewSet(viewsets.ModelViewSet):
         user.questionary = questionary
         user.step = 6
         user.save()
+        profile.is_step = True
+        profile.save()
         return JsonResponse({"id": profile_id, "success": True})
 
     @transaction.atomic()
@@ -717,6 +728,7 @@ class ManagerViewSet(viewsets.ModelViewSet):
         except KeyError:
             return JsonResponse({"error": "argument not found", "success": False})
         try:
+            profile = models.Profile.objects.get(pk=profile_id)
             user = models.Manager.objects.get(profile=profile_id)
         except:
             return JsonResponse({"error": "not found", "success": False})
@@ -725,6 +737,8 @@ class ManagerViewSet(viewsets.ModelViewSet):
         user.city = city
         user.step = 5
         user.save()
+        profile.is_step = True
+        profile.save()
         return JsonResponse({"id": profile_id, "success": True})
 
     @transaction.atomic()
@@ -882,6 +896,7 @@ class AssistantViewSet(viewsets.ModelViewSet):
         except KeyError:
             return JsonResponse({"error": "argument not found", "success": False})
         try:
+            profile = models.Profile.objects.get(pk=profile_id)
             user = models.Assistant.objects.get(profile=profile_id)
         except:
             return JsonResponse({"error": "not found", "success": False})
@@ -890,6 +905,8 @@ class AssistantViewSet(viewsets.ModelViewSet):
         user.city = city
         user.step = 5
         user.save()
+        profile.is_step = True
+        profile.save()
         return JsonResponse({"id": profile_id, "success": True})
 
     @transaction.atomic()
@@ -1047,6 +1064,7 @@ class TranslatorViewSet(viewsets.ModelViewSet):
         except KeyError:
             return JsonResponse({"error": "argument not found", "success": False})
         try:
+            profile = models.Profile.objects.get(pk=profile_id)
             user = models.Translator.objects.get(profile=profile_id)
         except:
             return JsonResponse({"error": "not found", "success": False})
@@ -1055,6 +1073,8 @@ class TranslatorViewSet(viewsets.ModelViewSet):
         user.city = city
         user.step = 5
         user.save()
+        profile.is_step = True
+        profile.save()
         return JsonResponse({"id": profile_id, "success": True})
 
     @transaction.atomic()
@@ -1212,6 +1232,7 @@ class PhysicianViewSet(viewsets.ModelViewSet):
         except KeyError:
             return JsonResponse({"error": "argument not found", "success": False})
         try:
+            profile = models.Profile.objects.get(pk=profile_id)
             user = models.Physician.objects.get(profile=profile_id)
         except:
             return JsonResponse({"error": "not found", "success": False})
@@ -1220,6 +1241,8 @@ class PhysicianViewSet(viewsets.ModelViewSet):
         user.city = city
         user.step = 5
         user.save()
+        profile.is_step = True
+        profile.save()
         return JsonResponse({"id": profile_id, "success": True})
 
     @transaction.atomic()
