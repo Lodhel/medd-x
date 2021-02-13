@@ -1,8 +1,6 @@
 import datetime
 
-from django.db import models
-from .services import General
-from django.contrib.postgres.fields import ArrayField
+from .question_models import *
 
 
 class Profile(models.Model):
@@ -168,74 +166,19 @@ class Cookie(models.Model):
         db_table = 'cookie'
 
 
-class QuestionBlock(models.Model):
-    title = models.CharField(max_length=128)
-    description = models.TextField()
-    question_list = ArrayField(models.IntegerField(), null=True)
-    question_group_list = ArrayField(models.IntegerField(), null=True)
+class ReferenceBook(models.Model):
+    title = models.CharField(max_length=255)
+    let = models.BooleanField(default=True)
+    default_columns = ArrayField(models.CharField(max_length=255))
 
     def __str__(self):
-        return str(self.pk)
+        return str(self.title)
 
     class Meta:
-        db_table = 'question_block'
+        db_table = 'reference_book'
 
 
-class QuestionGroup(models.Model):
-    question_list = ArrayField(models.IntegerField())
-
-    def __str__(self):
-        return str(self.pk)
-
-    class Meta:
-        db_table = 'question_group'
-
-
-class Question(models.Model):
-    quest = models.TextField()
-
-    def __str__(self):
-        return str(self.pk)
-
-    class Meta:
-        db_table = 'question'
-
-
-class Answer(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    answer = models.TextField()
-
-    def __str__(self):
-        return str(self.pk)
-
-    class Meta:
-        db_table = 'answer'
-
-
-class Chapter(models.Model):
-    title = models.CharField(max_length=128)
-    description = models.TextField()
-    question_list = ArrayField(models.IntegerField(), null=True)
-    question_group_list = ArrayField(models.IntegerField(), null=True)
-    question_block_list = ArrayField(models.IntegerField(), null=True)
-
-    def __str__(self):
-        return str(self.pk)
-
-    class Meta:
-        db_table = 'chapter'
-
-
-class Questionnarie(models.Model):
-    title = models.CharField(max_length=128)
-    description = models.TextField()
-    question_list = ArrayField(models.IntegerField(), null=True)
-    question_group_list = ArrayField(models.IntegerField(), null=True)
-    question_block_list = ArrayField(models.IntegerField(), null=True)
-    chapter_list = ArrayField(models.IntegerField(), null=True)
-
-    def __str__(self):
-        return str(self.pk)
-
-    class Meta:
-        db_table = 'questionnarie'
+class UserChoicesRB(models.Model):
+    rb = models.ForeignKey(ReferenceBook, on_delete=models.CASCADE)
+    column = models.CharField(max_length=255)
+    status = models.BooleanField(default=False)
