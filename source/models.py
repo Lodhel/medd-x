@@ -1,9 +1,6 @@
 import datetime
 
-from django.db import models
-from django.contrib.postgres.fields import ArrayField
-
-# from .question_models import *
+from .question_models import *
 
 
 class Profile(models.Model):
