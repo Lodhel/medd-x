@@ -1,6 +1,9 @@
 import datetime
 
-from .question_models import *
+from django.db import models
+from django.contrib.postgres.fields import ArrayField
+
+# from .question_models import *
 
 
 class Profile(models.Model):
@@ -11,8 +14,8 @@ class Profile(models.Model):
     is_send = models.BooleanField(default=False)
     is_sms = models.BooleanField(default=True)
     is_email = models.BooleanField(default=True)
-    check = models.DateTimeField(default=datetime.datetime.today().strftime('%Y-%m-%d %H:%M'))
-    date_joined = models.DateTimeField(default=datetime.datetime.today().strftime('%Y-%m-%d %H:%M'))
+    check = models.DateTimeField(default=datetime.datetime.today())
+    date_joined = models.DateTimeField(default=datetime.datetime.today())
     email = models.EmailField(max_length=32, null=True)
     phone = models.CharField(max_length=16, null=True)
     sms_code = models.CharField(max_length=4, null=True)
@@ -152,7 +155,7 @@ class Translator(models.Model):
 
 class Cookie(models.Model):
     title = models.CharField(max_length=255)
-    date_check = models.DateTimeField(default=datetime.datetime.today().strftime('%Y-%m-%d %H:%M'))
+    date_check = models.DateTimeField(default=datetime.datetime.today())
     data = ArrayField(
         models.TextField(),
         null=True
