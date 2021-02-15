@@ -81,16 +81,13 @@ class Question(models.Model):
     date_type = models.CharField(choices=(('one', 'one'), ("start_and_end", "start_and_end")), null=True, max_length=256)  # only date
     allow_current_future_date = models.BooleanField(default=False)  # only date
     allow_approximate_date = models.BooleanField(default=False)  # only date
-    measurement_units = models.CharField(max_length=128, null=True, blank=True)  # numeric with Measurement
+    measurement_units = models.CharField(max_length=256, null=True, blank=True)  # numeric with Measurement
     measurement_unit_by_default = models.CharField(null=True, max_length=256, blank=True)  # numeric with Measurement
-    attachment_choices = (
-        ('')
-    )
-    attachment_formats = models.CharField(max_length=128, choices=attachment_choices, null=True, blank=True)  # only upload_file {selectlist with formats}/{not define}
+    attachment_formats = models.CharField(max_length=256, null=True, blank=True)  # only upload_file {selectlist with formats}/{not define}
     created_table = models.IntegerField(null=True, blank=True)  # only table
     refbook_for_selectlist = models.IntegerField(null=True, blank=True)  # only rb
     allow_other = models.BooleanField(default=False)  # only rb
-
+    """
     meddata_types = (
         ('Condition or Disease', 'Condition or Disease'),
         ('Symptom', 'Symptom'),
@@ -106,18 +103,17 @@ class Question(models.Model):
         ('Allergy or Asthma', 'Allergy or Asthma'),
         ('Additional information', 'Additional information'),
         ('Cause of pathology', 'Cause of pathology')
-    )
-    meddata_type = models.CharField(choices=meddata_types, null=True, blank=True)
-    biomarket_choicee = ()
-    biomarket = models.CharField(choices=meddata_types, null=True, blank=True)
-    answer_impact_to_health_status = models.CharField()
+    )"""
+    meddata_type = models.CharField(max_length=256, null=True, blank=True)
+    biomarket = models.CharField(max_length=256, null=True, blank=True)
+    answer_impact_to_health_status = models.CharField(max_length=256, null=True, blank=True)
     influence_to_additional_question = models.TextField(null=True, blank=True)
-    default_chapter = models.CharField()
-    default_block = models.CharField()
-    destination_chapters = models.CharField()
-    destination_blocks = models.CharField()
-    age_groups = models.CharField()
-    gender = models.CharField(max_length=64, choices=(('male', 'male'), ('female', 'female')), default='male')
+    default_chapter = models.CharField(max_length=256, null=True, blank=True)
+    default_block = models.CharField(max_length=256, null=True, blank=True)
+    destination_chapters = models.CharField(max_length=256, null=True, blank=True)
+    destination_blocks = models.CharField(max_length=256, null=True, blank=True)
+    age_groups = models.CharField(max_length=256, null=True, blank=True)
+    gender = models.CharField(max_length=256, null=True, blank=True, default='male')
     comment = models.TextField(null=True, blank=True)
     notification = models.TextField(null=True, blank=True)
     additional_questions = ArrayField(models.IntegerField(), blank=True, null=True)
@@ -128,6 +124,116 @@ class Question(models.Model):
 
     class Meta:
         db_table = 'question'
+
+
+class ChoiceAttachment(models.Model):
+    title = models.CharField(max_length=4096)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        db_table = 'choice_attachment'
+
+
+class ChoiceGender(models.Model):
+    title = models.CharField(max_length=4096)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        db_table = 'choice_gender'
+
+
+class ChoiceAgeGroups(models.Model):
+    title = models.CharField(max_length=4096)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        db_table = 'choice_age_groups'
+
+
+class ChoiceDestinationBlock(models.Model):
+    title = models.CharField(max_length=4096)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        db_table = 'choice_destination_block'
+
+
+class ChoiceDestinationChapter(models.Model):
+    title = models.CharField(max_length=4096)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        db_table = 'choice_destination_chapter'
+
+
+class ChoiceDefaultBlock(models.Model):
+    title = models.CharField(max_length=4096)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        db_table = 'choice_default_block'
+
+
+class ChoiceDefaultChapter(models.Model):
+    title = models.CharField(max_length=4096)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        db_table = 'choice_default_chapter'
+
+
+class ChoiceHealthStatus(models.Model):
+    title = models.CharField(max_length=4096)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        db_table = 'choice_health_status'
+
+
+class ChoiceBioMarket(models.Model):
+    title = models.CharField(max_length=4096)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        db_table = 'choice_bio_market'
+
+
+class ChoiceMeddataType(models.Model):
+    title = models.CharField(max_length=4096)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        db_table = 'choice_meddata_type'
+
+
+class ChoiceMeasurmentDefault(models.Model):
+    title = models.CharField(max_length=4096)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        db_table = 'choice_measurment_default'
 
 
 class ChoiceMeasurment(models.Model):

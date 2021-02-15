@@ -30,6 +30,19 @@ router.register('assistant', views.AssistantViewSet)
 router.register('translator', views.TranslatorViewSet)
 router.register('physician', views.PhysicianViewSet)
 
+router.register('choice_attachment', views.ChoiceAttachmentViewSet)
+router.register('choice_gender', views.ChoiceGenderViewSet)
+router.register('choice_age_groups', views.ChoiceAgeGroupsViewSet)
+router.register('choice_destination_block', views.ChoiceDestinationBlockViewSet)
+router.register('choice_destination_chapter', views.ChoiceDestinationChapterViewSet)
+router.register('choice_default_block', views.ChoiceDefaultBlockViewSet)
+router.register('choice_default_chapter', views.ChoiceDefaultChapterViewSet)
+router.register('choice_health_status', views.ChoiceHealthStatusViewSet)
+router.register('choice_bio_market', views.ChoiceBioMarketViewSet)
+router.register('choice_meddata_type', views.ChoiceMeddataTypeViewSet)
+router.register('choice_measurment_default', views.ChoiceMeasurmentDefaultViewSet)
+router.register('choice_measurment', views.ChoiceMeasurmentViewSet)
+
 
 urlpatterns = [
     url(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),

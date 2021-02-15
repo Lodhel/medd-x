@@ -1,6 +1,5 @@
 from django.db import transaction
-from rest_framework import serializers
-from . import models, services
+from .question_serializers import *
 
 
 class CompanySerializer(serializers.ModelSerializer):
@@ -65,27 +64,4 @@ class TranslatorSerializer(serializers.ModelSerializer):
             'id',
         )
 
-
-class ChoiceSerializer(serializers.ModelSerializer):
-    percent = serializers.SerializerMethodField()
-
-    class Meta:
-        model = models.ChoiceMeasurment
-        fields = ['pk', 'title', ]
-
-    def get_percent(self, obj):
-        total = models.Answer.objects.filter(question=obj.question).count()
-        current = models.Answer.objects.filter(question=obj.question, choice=obj).count()
-        if total != 0:
-            return float(current * 100 / total)
-        else:
-            return float(0)
-
-
-class QuestionSerializer(serializers.ModelSerializer):
-    choices = ChoiceSerializer(many=True, source='choice_set', )
-
-    class Meta:
-        model = models.Question
-        fields = ['id', ]
 
