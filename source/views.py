@@ -154,7 +154,7 @@ class CompanyViewSet(viewsets.ModelViewSet):
         except:
             return JsonResponse({"error": "not found", "success": False})
 
-        if profile.token == auth:
+        if profile.sms_code == auth:
             profile.is_active = True
             profile.save()
             user.step = 2
@@ -235,10 +235,19 @@ class CompanyViewSet(viewsets.ModelViewSet):
         except:
             return JsonResponse({"error": "not found", "success": False})
 
-        # TODO created users
+        if representatives_emails and representatives_phones:
+            for email, phone in zip(representatives_emails, representatives_phones):
+                try:
+                    created_user = models.Profile(**{"email": email, "phone": phone})  # TODO check unique
+                    created_user.save()
+                    link = "http://188.225.58.31:8080/?auth={}".format("xxx")  # TODO create link
+                    send_service.Sendor().send_invite_sms(user.name, phone, link)
+                    send_service.Sendor().send_invite_email(user.name, email, link, "your address")
+                except:
+                    pass
 
-        user.representatives_phones = representatives_phones  # TODO send invite to phones
-        user.representatives_emails = representatives_emails  # TODO send invite to emails
+        user.representatives_phones = representatives_phones
+        user.representatives_emails = representatives_emails
         user.step = 6
         user.save()
         profile.is_step = True
