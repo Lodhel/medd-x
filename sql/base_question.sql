@@ -17,7 +17,9 @@ insert into choice_gender(id, title) values (0, 'male');
 insert into choice_gender(id, title) values (1, 'female');
 insert into choice_gender(id, title) values (2, 'transgendor');
 
-insert into choice_attachment(id, title) values (0, 'male');
+insert into choice_attachment(id, title) values (0, 'jpg');
+insert into choice_attachment(id, title) values (1, 'png');
+insert into choice_attachment(id, title) values (2, 'bmp');
 
 insert into choice_age_groups(id, title) values (0, 'Adult');
 insert into choice_age_groups(id, title) values (1, 'Child');
@@ -25,14 +27,10 @@ insert into choice_age_groups(id, title) values (2, 'Babies and Infants');
 insert into choice_age_groups(id, title) values (3, 'Teens and Young Adults');
 insert into choice_age_groups(id, title) values (4, 'Elderly');
 
-insert into choice_destination_block(id, title) values (0, 'male');
-
-insert into choice_destination_chapter(id, title) values (0, 'male');
-
-insert into choice_default_block(id, title) values (0, 'male');
-
-insert into choice_default_chapter(id, title) values (0, 'male');
-
 insert into choice_bio_market(id, title) values (0, 'biomarket');
 
-insert into choice_measurment(id, title) values (0, 'male');
+insert into choice_measurment(id, title) values (0, 'gr');
+insert into choice_measurment(id, title) values (1, 'kg');
+insert into choice_measurment(id, title) values (2, 'oz');
+insert into choice_measurment(id, title) values (3, 'lb');
+insert into choice_measurment(id, title) values (4, 'stone');
