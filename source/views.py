@@ -15,7 +15,8 @@ class UserViewSet:
                 return profile
             except:
                 pass
-        elif "email" in data:
+
+        if "email" in data:
             try:
                 profile = models.Profile.objects.get(email=data["email"])
                 return profile
@@ -238,11 +239,14 @@ class CompanyViewSet(viewsets.ModelViewSet):
         if representatives_emails and representatives_phones:
             for email, phone in zip(representatives_emails, representatives_phones):
                 try:
-                    created_user = models.Profile(**{"email": email, "phone": phone})  # TODO check unique
-                    created_user.save()
-                    link = "http://188.225.58.31:8080/?auth={}".format("xxx")  # TODO create link
-                    send_service.Sendor().send_invite_sms(user.name, phone, link)
-                    send_service.Sendor().send_invite_email(user.name, email, link, "your address")
+                    if not UserViewSet().check_for_unique({"email": email, "phone": phone}):  # TODO notification if was
+                        created_user = models.Profile(**{"email": email, "phone": phone})
+                        token = services.General().generate_token()
+                        created_user.token = token
+                        created_user.save()
+                        link = "http://188.225.58.31:8080/api/profile/info/?auth={}".format(token)
+                        send_service.Sendor().send_invite_sms(user.name, phone, link)
+                        send_service.Sendor().send_invite_email(user.name, email, link, email)
                 except:
                     pass
 

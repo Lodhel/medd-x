@@ -393,11 +393,33 @@ class ProfileInfo(web.View, CorsViewMixin):
 
     async def get(self):
         params = self.request.rel_url.query
-        data = await self.request.json()
+        if "auth" in params.keys():
+            profile = await Profile.query.where(Profile.token == params["auth"]).gino.first()
+            if not profile:
+                return json_response({
+                    "success": False,
+                    "info": "user not found"
+                })
 
-        return json_response({
-            "success": True,  # TODO create mirror
-        })
+            await profile.update(token=General().generate_token()).apply()
+            instance = {
+                "id": profile.id,
+                "country": profile.country,
+                "city": profile.city,
+                "phone": profile.phone,
+                "email": profile.email,
+                "auth": profile.token
+            }
+
+            return json_response({
+                "success": True,
+                "data": instance
+            })
+        else:
+            return json_response({
+                "success": False,
+                "info": "parameter auth not found"
+            })
 
 
 @routes.view("/api/question")
