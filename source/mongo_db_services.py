@@ -11,7 +11,7 @@ class BaseMongo:
 
     def create_default_data(self):
 
-        doc = {
+        data = {
             "Condition or Disease": [
                 "Excludes the presence of condition",
                 "Confirms the presence of condition",
@@ -44,5 +44,16 @@ class BaseMongo:
             "Cause of pathology": []
         }
         coll = self.connect()
-        coll.save(doc)
+        coll.save(data)
+
+    def get(self, key):
+        coll = self.connect()
+        data = [info for info in coll.find(key)]
+
+        return {key: data}
+
+    def all_destroy(self):
+        coll = self.connect()
+        coll.remove({})
+
 
