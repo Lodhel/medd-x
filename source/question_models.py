@@ -134,6 +134,8 @@ class ChoiceAttachment(models.Model):
 
     class Meta:
         db_table = 'choice_attachment'
+        verbose_name = 'file-format'
+        verbose_name_plural = 'file-formats'
 
 
 class ChoiceGender(models.Model):
@@ -154,6 +156,8 @@ class ChoiceAgeGroups(models.Model):
 
     class Meta:
         db_table = 'choice_age_groups'
+        verbose_name = 'age_group'
+        verbose_name_plural = 'age_groups'
 
 
 class ChoiceDestinationBlock(models.Model):
@@ -204,6 +208,8 @@ class ChoiceHealthStatus(models.Model):
 
     class Meta:
         db_table = 'choice_health_status'
+        verbose_name = 'impact-to-health-status'
+        verbose_name_plural = 'impact_to_health_status'
 
 
 class ChoiceBioMarket(models.Model):
@@ -214,6 +220,8 @@ class ChoiceBioMarket(models.Model):
 
     class Meta:
         db_table = 'choice_bio_market'
+        verbose_name = 'biomarket'
+        verbose_name_plural = 'biomarkets'
 
 
 class ChoiceMeddataType(models.Model):
@@ -244,6 +252,8 @@ class ChoiceMeasurment(models.Model):
 
     class Meta:
         db_table = 'choice_measurment'
+        verbose_name = 'measurment-unit'
+        verbose_name_plural = 'measurment-units'
 
 
 class Answer(models.Model):

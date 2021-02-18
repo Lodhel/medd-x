@@ -66,6 +66,8 @@ class Company(models.Model):
 
     class Meta:
         db_table = 'company'
+        verbose_name = 'company'
+        verbose_name_plural = 'companies'
 
 
 class Anonym(models.Model):
@@ -78,6 +80,8 @@ class Anonym(models.Model):
 
     class Meta:
         db_table = 'anonym'
+        verbose_name = 'anonym-patient'
+        verbose_name_plural = 'anonym-patients'
 
 
 class Secure(models.Model):
@@ -92,6 +96,8 @@ class Secure(models.Model):
 
     class Meta:
         db_table = 'secure'
+        verbose_name = 'secure-patient'
+        verbose_name_plural = 'secure-patients'
 
 
 class Manager(models.Model):
@@ -106,6 +112,8 @@ class Manager(models.Model):
 
     class Meta:
         db_table = 'manager'
+        verbose_name = 'company manager'
+        verbose_name_plural = 'company managers'
 
 
 class Physician(models.Model):
